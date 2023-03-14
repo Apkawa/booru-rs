@@ -1,11 +1,9 @@
 use crate::model::gelbooru::*;
-use async_trait::async_trait;
 
 pub trait BooruClient<A> {
     fn builder() -> A;
 }
 
-#[async_trait]
 pub trait BooruBuilder<A, B> {
     fn new() -> Self;
 
@@ -25,7 +23,7 @@ pub trait BooruBuilder<A, B> {
 
     fn default_url(self, url: &str) -> Self;
 
-    async fn get_by_id(&self, id: u32) -> Result<GelbooruPost, reqwest::Error>;
+    fn get_by_id(&self, id: u32) -> Result<GelbooruPost, reqwest::Error>;
 
-    async fn get(&self) -> Result<Vec<GelbooruPost>, reqwest::Error>;
+    fn get(&self) -> Result<Vec<GelbooruPost>, reqwest::Error>;
 }

@@ -1,94 +1,88 @@
+#[cfg(feature = "gelbooru")]
 mod gelbooru {
     use booru_rs::{
         client::{gelbooru::GelbooruClient, generic::*},
         model::gelbooru::{GelbooruRating, GelbooruSort},
     };
 
-    #[tokio::test]
-    async fn get_posts_with_tag() {
-        let posts = GelbooruClient::builder().tag("kafuu_chino").get().await;
+    #[test]
+    fn get_posts_with_tag() {
+        let posts = GelbooruClient::builder().tag("kafuu_chino").get().unwrap();
 
-        assert!(posts.is_ok());
-        assert!(!posts.unwrap().is_empty());
+        assert!(!posts.is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_rating() {
+    #[test]
+    fn get_posts_with_rating() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_sort() {
+    #[test]
+    fn get_posts_with_sort() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .sort(GelbooruSort::Score)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_blacklist_tag() {
+    #[test]
+    fn get_posts_with_blacklist_tag() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .blacklist_tag(GelbooruRating::Explicit)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_limit() {
+    #[test]
+    fn get_posts_with_limit() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
             .limit(3)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(posts.unwrap().len() == 3);
     }
 
-    #[tokio::test]
-    async fn get_posts_multiple_tags() {
+    #[test]
+    fn get_posts_multiple_tags() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .tag("bangs")
             .limit(3)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_random_posts() {
+    #[test]
+    fn get_random_posts() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .random(true)
-            .get()
-            .await;
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_post_by_id() {
-        let post = GelbooruClient::builder().get_by_id(7898595).await;
+    #[test]
+    fn get_post_by_id() {
+        let post = GelbooruClient::builder().get_by_id(7898595);
 
         assert!(post.is_ok());
         assert_eq!("e40b797a0e26755b2c0dd7a34d8c95ce", post.unwrap().md5);

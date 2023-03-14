@@ -1,3 +1,4 @@
+#[cfg(feature = "danbooru")]
 #[cfg(test)]
 mod danbooru {
     use booru_rs::{
@@ -5,103 +6,103 @@ mod danbooru {
         model::danbooru::{DanbooruRating, DanbooruSort},
     };
 
-    #[tokio::test]
-    async fn get_posts_with_tag() {
+    #[test]
+    fn get_posts_with_tag() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_rating() {
+    #[test]
+    fn get_posts_with_rating() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .rating(DanbooruRating::General)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_sort() {
+    #[test]
+    fn get_posts_with_sort() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .sort(DanbooruSort::Rating)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_blacklist_tag() {
+    #[test]
+    fn get_posts_with_blacklist_tag() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .blacklist_tag(DanbooruRating::Explicit)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_posts_with_limit() {
+    #[test]
+    fn get_posts_with_limit() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .limit(3)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(posts.unwrap().len() == 3);
     }
 
-    #[tokio::test]
-    async fn get_posts_multiple_tags() {
+    #[test]
+    fn get_posts_multiple_tags() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .tag("bangs")
             .limit(3)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_random_posts() {
+    #[test]
+    fn get_random_posts() {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .random(true)
-            .get()
-            .await;
+            .build()
+            .get();
 
         assert!(posts.is_ok());
         assert!(!posts.unwrap().is_empty());
     }
 
-    #[tokio::test]
-    async fn get_post_by_id() {
+    #[test]
+    fn get_post_by_id() {
         let post = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
-            .get_by_id(9423)
-            .await;
+            .build()
+            .get_by_id(9423);
 
         assert!(post.is_ok());
         assert_eq!(

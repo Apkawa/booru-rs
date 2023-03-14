@@ -1,5 +1,4 @@
-use async_trait::async_trait;
-use reqwest::Client;
+use reqwest::blocking::Client;
 
 use crate::client::generic::*;
 use crate::model::gelbooru::*;
@@ -24,7 +23,6 @@ pub struct GelbooruClientBuilder {
     url: String,
 }
 
-#[async_trait]
 impl BooruBuilder<GelbooruRating, GelbooruSort> for GelbooruClientBuilder {
     fn new() -> Self {
         GelbooruClientBuilder {
@@ -88,7 +86,7 @@ impl BooruBuilder<GelbooruRating, GelbooruSort> for GelbooruClientBuilder {
     }
 
     /// Directly get a post by its unique Id
-    async fn get_by_id(&self, id: u32) -> Result<GelbooruPost, reqwest::Error> {
+    fn get_by_id(&self, id: u32) -> Result<GelbooruPost, reqwest::Error> {
         let url = self.url.as_str();
         let response = self
             .client
@@ -100,16 +98,13 @@ impl BooruBuilder<GelbooruRating, GelbooruSort> for GelbooruClientBuilder {
                 ("id", id.to_string().as_str()),
                 ("json", "1"),
             ])
-            .send()
-            .await?
-            .json::<GelbooruResponse>()
-            .await?;
-
+            .send()?
+            .json::<GelbooruResponse>()?;
         Ok(response.posts[0].clone())
     }
 
     /// Pack the [`GelbooruClientBuilder`] and sent the request to the API to retrieve the posts
-    async fn get(&self) -> Result<Vec<GelbooruPost>, reqwest::Error> {
+    fn get(&self) -> Result<Vec<GelbooruPost>, reqwest::Error> {
         let url = self.url.as_str();
         let tag_string = self.tags.join(" ");
         let response = self
@@ -123,10 +118,8 @@ impl BooruBuilder<GelbooruRating, GelbooruSort> for GelbooruClientBuilder {
                 ("tags", &tag_string),
                 ("json", "1"),
             ])
-            .send()
-            .await?
-            .json::<GelbooruResponse>()
-            .await?;
+            .send()?
+            .json::<GelbooruResponse>()?;
 
         Ok(response.posts)
     }

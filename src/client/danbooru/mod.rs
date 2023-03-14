@@ -1,6 +1,7 @@
-use reqwest::Client;
+use reqwest::blocking::{Client, ClientBuilder};
+use reqwest::{IntoUrl, Proxy};
 
-use crate::model::danbooru::*;
+use crate::model::danbooru::{DanbooruPost, DanbooruRating, DanbooruSort};
 use crate::utils::general::get_headers;
 
 /// Client that sends requests to the Danbooru API to retrieve the data.
@@ -15,7 +16,8 @@ impl DanbooruClient {
 /// Builder for [`DanbooruClient`]
 #[derive(Default)]
 pub struct DanbooruClientBuilder {
-    client: Client,
+    client_builder: Option<ClientBuilder>,
+    client: Option<Client>,
     key: Option<String>,
     user: Option<String>,
     tags: Vec<String>,
@@ -26,13 +28,40 @@ pub struct DanbooruClientBuilder {
 impl DanbooruClientBuilder {
     pub fn new() -> DanbooruClientBuilder {
         DanbooruClientBuilder {
-            client: Client::new(),
+            client_builder: Some(ClientBuilder::default()),
+            client: None,
             key: None,
             user: None,
             tags: vec![],
             limit: 100,
             url: "https://danbooru.donmai.us".to_string(),
         }
+    }
+    pub fn build(mut self) -> Self {
+        self.client = Some(
+            self.client_builder
+                .take()
+                .unwrap()
+                .default_headers(get_headers())
+                .build()
+                .unwrap(),
+        );
+
+        self
+    }
+
+    pub fn client(&self) -> &Client {
+        self.client.as_ref().unwrap()
+    }
+
+    pub fn proxy<I: IntoUrl>(mut self, proxy: Option<I>) -> Self {
+        if let Some(proxy) = proxy {
+            let proxy = Proxy::all(proxy).unwrap();
+            self.client_builder = Some(self.client_builder.unwrap().proxy(proxy));
+        } else {
+            self.client_builder = Some(self.client_builder.unwrap().no_proxy());
+        };
+        self
     }
     /// Set the API key and User for the requests (optional)
     pub fn set_credentials(mut self, key: String, user: String) -> Self {
@@ -89,35 +118,29 @@ impl DanbooruClientBuilder {
     }
 
     /// Directly get a post by its unique Id
-    pub async fn get_by_id(&self, id: u32) -> Result<DanbooruPost, reqwest::Error> {
+    pub fn get_by_id(&self, id: u32) -> Result<DanbooruPost, reqwest::Error> {
         let url = self.url.as_str();
         let response = self
-            .client
+            .client()
             .get(format!("{url}/posts/{id}.json"))
-            .headers(get_headers())
-            .send()
-            .await?
-            .json::<DanbooruPost>()
-            .await?;
+            .send()?
+            .json::<DanbooruPost>()?;
         Ok(response)
     }
 
     /// Pack the [`DanbooruClientBuilder`] and sent the request to the API to retrieve the posts
-    pub async fn get(&self) -> Result<Vec<DanbooruPost>, reqwest::Error> {
+    pub fn get(&self) -> Result<Vec<DanbooruPost>, reqwest::Error> {
         let tag_string = self.tags.join(" ");
         let url = self.url.as_str();
         let response = self
-            .client
+            .client()
             .get(format!("{url}/posts.json"))
-            .headers(get_headers())
             .query(&[
                 ("limit", self.limit.to_string().as_str()),
                 ("tags", &tag_string),
             ])
-            .send()
-            .await?
-            .json::<Vec<DanbooruPost>>()
-            .await?;
+            .send()?
+            .json::<Vec<DanbooruPost>>()?;
 
         Ok(response)
     }
