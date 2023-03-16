@@ -5,6 +5,7 @@ mod danbooru {
         client::danbooru::DanbooruClient,
         model::danbooru::{DanbooruRating, DanbooruSort},
     };
+    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
 
     #[test]
     fn get_posts_with_tag() {
@@ -12,10 +13,10 @@ mod danbooru {
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .build()
-            .get();
+            .get()
+            .unwrap();
 
-        assert!(posts.is_ok());
-        assert!(!posts.unwrap().is_empty());
+        assert!(!posts.is_empty());
     }
 
     #[test]
@@ -36,7 +37,7 @@ mod danbooru {
         let posts = DanbooruClient::builder()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
-            .sort(DanbooruSort::Rating)
+            .order(DanbooruSort::Rating)
             .build()
             .get();
 

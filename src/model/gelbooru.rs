@@ -37,6 +37,12 @@ pub struct GelbooruResponse {
     pub posts: Vec<GelbooruPost>,
 }
 
+impl From<GelbooruResponse> for Vec<GelbooruPost> {
+    fn from(value: GelbooruResponse) -> Self {
+        value.posts
+    }
+}
+
 /// Post's rating. Check the [Gelbooru's ratings wiki](https://gelbooru.com/index.php?page=help&topic=rating)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]

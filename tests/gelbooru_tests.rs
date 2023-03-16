@@ -7,7 +7,12 @@ mod gelbooru {
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = GelbooruClient::builder().tag("kafuu_chino").get().unwrap();
+        let posts = GelbooruClient::builder()
+            .tag("kafuu_chino")
+            .proxy(Some("https://proxy-ssl.antizapret.prostovpn.org:3143"))
+            .build()
+            .get()
+            .unwrap();
 
         assert!(!posts.is_empty());
     }
@@ -17,21 +22,23 @@ mod gelbooru {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
-            .get();
+            .build()
+            .get()
+            .unwrap();
 
-        assert!(posts.is_ok());
-        assert!(!posts.unwrap().is_empty());
+        assert!(!posts.is_empty());
     }
 
     #[test]
     fn get_posts_with_sort() {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
-            .sort(GelbooruSort::Score)
-            .get();
+            .order(GelbooruSort::Score)
+            .build()
+            .get()
+            .unwrap();
 
-        assert!(posts.is_ok());
-        assert!(!posts.unwrap().is_empty());
+        assert!(!posts.is_empty());
     }
 
     #[test]
@@ -39,10 +46,11 @@ mod gelbooru {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .blacklist_tag(GelbooruRating::Explicit)
-            .get();
+            .build()
+            .get()
+            .unwrap();
 
-        assert!(posts.is_ok());
-        assert!(!posts.unwrap().is_empty());
+        assert!(!posts.is_empty());
     }
 
     #[test]
@@ -51,6 +59,7 @@ mod gelbooru {
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
             .limit(3)
+            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -63,6 +72,7 @@ mod gelbooru {
             .tag("kafuu_chino")
             .tag("bangs")
             .limit(3)
+            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -74,6 +84,7 @@ mod gelbooru {
         let posts = GelbooruClient::builder()
             .tag("kafuu_chino")
             .random(true)
+            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -82,7 +93,7 @@ mod gelbooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = GelbooruClient::builder().get_by_id(7898595);
+        let post = GelbooruClient::builder().build().get_by_id(7898595);
 
         assert!(post.is_ok());
         assert_eq!("e40b797a0e26755b2c0dd7a34d8c95ce", post.unwrap().md5);
@@ -107,5 +118,10 @@ mod gelbooru {
         assert_eq!("width", GelbooruSort::Width.to_string());
         assert_eq!("source", GelbooruSort::Source.to_string());
         assert_eq!("updated", GelbooruSort::Updated.to_string());
+    }
+
+    #[test]
+    fn deserialize_json() {
+        
     }
 }
