@@ -40,8 +40,10 @@ pub trait BooruClient<'a> {
         [&self.options().url, path.as_str()].join("/")
     }
 
-    fn url_posts(&'a self) -> String {
-        [&self.options().url, Self::PATH_POST].join("/")
+    fn url_posts(&'a self, page: Option<usize>) -> String {
+        let page = page.unwrap_or(1);
+
+        [&self.options().url, Self::PATH_POST].join("/").replace("{page}", &page.to_string())
     }
 
     /// Directly get a post by its unique Id
@@ -55,12 +57,12 @@ pub trait BooruClient<'a> {
         Ok(response.into())
     }
 
-
-    fn get(&'a self) -> Result<Vec<Self::PostModel>, reqwest::Error> {
+    fn get_with_page(&'a self, page: Option<usize>) -> Result<Vec<Self::PostModel>, reqwest::Error> {
         let tag_string = self.options().tags.join(" ");
+        let url = self.url_posts(page);
         let request = self
             .client()
-            .get(self.url_posts())
+            .get(url)
             .query(&[
                 ("limit", self.options().limit.to_string().as_str()),
                 ("tags", &tag_string),
@@ -77,6 +79,11 @@ pub trait BooruClient<'a> {
         }
 
         Ok(json.unwrap().into())
+    }
+
+    /// Get first page
+    fn get(&'a self) -> Result<Vec<Self::PostModel>, reqwest::Error> {
+        self.get_with_page(None)
     }
 }
 

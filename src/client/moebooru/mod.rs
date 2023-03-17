@@ -1,4 +1,3 @@
-use reqwest::Error;
 use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
 use self::model::{MoebooruPost, MoebooruRating, MoebooruSort};
@@ -15,8 +14,8 @@ impl BooruClient<'_> for MoebooruClient {
     type PostModel = MoebooruPost;
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
-    const PATH_POST_BY_ID: &'static str = "post.json";
-    const PATH_POST: &'static str = "post.json";
+    const PATH_POST_BY_ID: &'static str = "post.json?tags=id:{id}";
+    const PATH_POST: &'static str = "post.json?page={page}";
 
     fn new(options: BooruClientBuilderOptions) -> Self {
         MoebooruClient { options: options.into() }
@@ -25,18 +24,7 @@ impl BooruClient<'_> for MoebooruClient {
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
     }
-    fn get_by_id(&'_ self, id: u32) -> Result<Self::PostModel, Error> {
-        let response = self
-            .client()
-            .get(self.url_post_by_id(id))
-            .query(&[
-                ("tags", format!("id:{id}").as_str()),
-                ]
-            )
-            .send()?
-            .json::<Self::PostResponse>()?;
-        Ok(response.into())
-    }
+
 }
 
 /// Builder for [`MoebooruClient`]

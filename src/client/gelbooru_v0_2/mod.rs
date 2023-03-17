@@ -16,7 +16,7 @@ impl BooruClient<'_> for GelbooruClientV0_2 {
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
     const PATH_POST_BY_ID: &'static str = "index.php?page=dapi&s=post&q=index&json=1&id={id}";
-    const PATH_POST: &'static str = "index.php?page=dapi&s=post&q=index&json=1";
+    const PATH_POST: &'static str = "index.php?page=dapi&s=post&q=index&json=1&pid={page}";
 
     fn new(options: BooruClientBuilderOptions) -> Self {
         GelbooruClientV0_2 { options: options.into() }
