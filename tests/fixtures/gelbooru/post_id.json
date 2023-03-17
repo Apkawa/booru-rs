@@ -1,0 +1,40 @@
+{
+  "@attributes": {
+    "limit": 1,
+    "offset": 0,
+    "count": 1
+  },
+  "post": [
+    {
+      "id": 8297763,
+      "created_at": "Sat Mar 04 09:16:56 -0600 2023",
+      "score": 4,
+      "width": 752,
+      "height": 1062,
+      "md5": "9e3bfd305e74bc084b488fde96c4fcf1",
+      "directory": "9e/3b",
+      "image": "9e3bfd305e74bc084b488fde96c4fcf1.jpg",
+      "rating": "questionable",
+      "source": "https://www.pixiv.net/artworks/105914938",
+      "change": 1678847338,
+      "owner": "danbooru",
+      "creator_id": 6498,
+      "parent_id": 0,
+      "sample": 0,
+      "preview_height": 249,
+      "preview_width": 177,
+      "tags": "1girl alternate_costume apron bare_shoulders bikini bitter_crown black_skirt black_sleeves blue_bow blue_eyes blue_hair blush bow breasts closed_mouth commentary_request covered_erect_nipples detached_sleeves enmaided floral_background frilled_apron frilled_bikini frilled_sleeves frills gluteal_fold gochuumon_wa_usagi_desu_ka? hair_ornament hand_up heart kafuu_chino long_hair looking_at_viewer maid maid_bikini maid_headdress navel panties pleated_skirt puffy_short_sleeves puffy_sleeves short_sleeves simple_background skirt small_breasts smile solo swimsuit thighhighs underwear very_long_hair waist_apron white_apron white_background white_panties white_thighhighs wrist_cuffs x_hair_ornament",
+      "title": "",
+      "has_notes": "false",
+      "has_comments": "false",
+      "file_url": "https://img3.gelbooru.com/images/9e/3b/9e3bfd305e74bc084b488fde96c4fcf1.jpg",
+      "preview_url": "https://img3.gelbooru.com/thumbnails/9e/3b/thumbnail_9e3bfd305e74bc084b488fde96c4fcf1.jpg",
+      "sample_url": "",
+      "sample_height": 0,
+      "sample_width": 0,
+      "status": "active",
+      "post_locked": 0,
+      "has_children": "false"
+    }
+  ]
+}

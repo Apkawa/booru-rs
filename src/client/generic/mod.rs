@@ -15,7 +15,8 @@ pub struct BooruClientOptions {
 pub trait BooruClient<'a> {
     type Builder: BooruClientBuilder + Default + Sized;
     type PostModel: DeserializeOwned;
-    type PostListModel: DeserializeOwned + Into<Vec<Self::PostModel>>;
+    type PostResponse: DeserializeOwned + Into<Self::PostModel>;
+    type PostListResponse: DeserializeOwned + Into<Vec<Self::PostModel>>;
 
     const PATH_POST_BY_ID: &'static str;
     const PATH_POST: &'static str;
@@ -48,8 +49,8 @@ pub trait BooruClient<'a> {
             .client()
             .get(self.url_post_by_id(id))
             .send()?
-            .json::<Self::PostModel>()?;
-        Ok(response)
+            .json::<Self::PostResponse>()?;
+        Ok(response.into())
     }
 
 
@@ -66,7 +67,7 @@ pub trait BooruClient<'a> {
         let response = request.send()?;
         dbg!(&response);
         let text = response.text().unwrap();
-        let json = serde_json::from_str::<Self::PostListModel>(&text);
+        let json = serde_json::from_str::<Self::PostListResponse>(&text);
         if json.is_err() {
             dbg!(&text);
             json.unwrap();

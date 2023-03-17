@@ -87,6 +87,7 @@ pub enum DanbooruSort {
     Width,
     Source,
     Updated,
+    Random,
 }
 
 impl fmt::Display for DanbooruSort {

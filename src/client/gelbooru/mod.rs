@@ -5,7 +5,7 @@ use self::model::{GelbooruPost, GelbooruRating, GelbooruResponse, GelbooruSort};
 pub mod model;
 
 
-/// Client that sends requests to the Gelbooru API to retrieve the data.
+/// Client that sends requests to the Gelbooru >=v0.2.5 API to retrieve the data.
 pub struct GelbooruClient {
     options: BooruClientOptions,
 }
@@ -13,7 +13,8 @@ pub struct GelbooruClient {
 impl BooruClient<'_> for GelbooruClient {
     type Builder = GelbooruClientBuilder;
     type PostModel = GelbooruPost;
-    type PostListModel = GelbooruResponse;
+    type PostResponse = GelbooruResponse;
+    type PostListResponse = GelbooruResponse;
     const PATH_POST_BY_ID: &'static str = "index.php?page=dapi&s=post&q=index&json=1&id={id}";
     const PATH_POST: &'static str = "index.php?page=dapi&s=post&q=index&json=1";
 
@@ -56,6 +57,13 @@ impl BooruClientBuilder for GelbooruClientBuilder {
         } else {
             self
         }
+    }
+    // https://gelbooru.com/index.php?page=help&topic=cheatsheet
+    fn order(self, order: Self::Order) -> Self
+        where
+            Self: Sized
+    {
+        self.tag(format!("sort:{}", order))
     }
 
     fn with_inner_options<F>(mut self, func: F) -> Self

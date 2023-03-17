@@ -13,7 +13,8 @@ pub struct DanbooruClient {
 impl BooruClient<'_> for DanbooruClient {
     type Builder = DanbooruClientBuilder;
     type PostModel = DanbooruPost;
-    type PostListModel = Vec<Self::PostModel>;
+    type PostResponse = Self::PostModel;
+    type PostListResponse = Vec<Self::PostModel>;
     const PATH_POST_BY_ID: &'static str = "posts/{id}.json";
     const PATH_POST: &'static str = "posts.json";
 

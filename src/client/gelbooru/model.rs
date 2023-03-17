@@ -33,8 +33,14 @@ pub struct GelbooruPost {
 /// Gelbooru's API response with a list a posts
 #[derive(Serialize, Deserialize, Debug)]
 pub struct GelbooruResponse {
-    #[serde(rename = "post")]
+    #[serde(rename = "post", default = "Vec::new")]
     pub posts: Vec<GelbooruPost>,
+}
+
+impl From<GelbooruResponse> for GelbooruPost {
+    fn from(value: GelbooruResponse) -> Self {
+        value.posts[0].to_owned()
+    }
 }
 
 impl From<GelbooruResponse> for Vec<GelbooruPost> {
@@ -77,6 +83,7 @@ pub enum GelbooruSort {
     Width,
     Source,
     Updated,
+    Random,
 }
 
 impl fmt::Display for GelbooruSort {

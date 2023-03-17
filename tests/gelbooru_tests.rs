@@ -1,16 +1,19 @@
 #[cfg(feature = "gelbooru")]
 mod gelbooru {
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
     use booru_rs::client::gelbooru::{
         GelbooruClient,
         model::{GelbooruRating, GelbooruSort},
     };
+    use booru_rs::client::gelbooru::model::{GelbooruPost, GelbooruResponse};
+    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+
+    use crate::helpers::{load_json_fixture, proxy};
 
     #[test]
     fn get_posts_with_tag() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
-            .proxy(Some("https://proxy-ssl.antizapret.prostovpn.org:3143"))
             .build()
             .get()
             .unwrap();
@@ -21,6 +24,7 @@ mod gelbooru {
     #[test]
     fn get_posts_with_rating() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
             .build()
@@ -33,6 +37,7 @@ mod gelbooru {
     #[test]
     fn get_posts_with_sort() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .order(GelbooruSort::Score)
             .build()
@@ -45,6 +50,7 @@ mod gelbooru {
     #[test]
     fn get_posts_with_blacklist_tag() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .blacklist_tag(GelbooruRating::Explicit)
             .build()
@@ -57,6 +63,7 @@ mod gelbooru {
     #[test]
     fn get_posts_with_limit() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
             .limit(3)
@@ -70,6 +77,7 @@ mod gelbooru {
     #[test]
     fn get_posts_multiple_tags() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .tag("bangs")
             .limit(3)
@@ -83,6 +91,7 @@ mod gelbooru {
     #[test]
     fn get_random_posts() {
         let posts = GelbooruClient::builder()
+            .proxy(proxy())
             .tag("kafuu_chino")
             .random(true)
             .build()
@@ -94,11 +103,14 @@ mod gelbooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = GelbooruClient::builder().build().get_by_id(7898595);
+        let post = GelbooruClient::builder()
+            .proxy(proxy())
+            .build()
+            .get_by_id(7898595);
 
-        assert!(post.is_ok());
         assert_eq!("e40b797a0e26755b2c0dd7a34d8c95ce", post.unwrap().md5);
     }
+
 
     #[test]
     fn parse_rating_tags() {
@@ -120,4 +132,22 @@ mod gelbooru {
         assert_eq!("source", GelbooruSort::Source.to_string());
         assert_eq!("updated", GelbooruSort::Updated.to_string());
     }
+
+
+    #[test]
+    fn posts_deserialize_json() {
+        let json: GelbooruResponse = serde_json::from_str(load_json_fixture("gelbooru/posts").as_str()).unwrap();
+        assert_eq!(json.posts.len(), 10);
+        let models: Vec<GelbooruPost> = json.into();
+        assert_eq!(models.len(), 10);
+    }
+
+    #[test]
+    fn post_deserialize_json() {
+        let json: GelbooruResponse = serde_json::from_str(load_json_fixture("gelbooru/post_id").as_str()).unwrap();
+        let model: GelbooruPost = json.into();
+        assert_eq!(model.id, 8297763);
+    }
 }
+
+

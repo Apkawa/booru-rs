@@ -5,7 +5,9 @@ mod danbooru {
         DanbooruClient,
         model::{DanbooruRating, DanbooruSort},
     };
+    use booru_rs::client::danbooru::model::DanbooruPost;
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+    use crate::helpers::load_json_fixture;
 
     #[test]
     fn get_posts_with_tag() {
@@ -131,4 +133,18 @@ mod danbooru {
         assert_eq!("source", DanbooruSort::Source.to_string());
         assert_eq!("updated", DanbooruSort::Updated.to_string());
     }
+
+    #[test]
+    fn posts_deserialize_json() {
+        let json: Vec<DanbooruPost> = serde_json::from_str(load_json_fixture("danbooru/posts").as_str()).unwrap();
+        assert_eq!(json.len(), 10);
+    }
+
+    #[test]
+    fn post_deserialize_json() {
+        let json: DanbooruPost = serde_json::from_str(load_json_fixture("danbooru/post_id").as_str()).unwrap();
+        let model: DanbooruPost = json.into();
+        assert_eq!(model.id, 6148688);
+    }
+
 }

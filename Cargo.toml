@@ -23,3 +23,5 @@ serde_json = "1.0.94"
 [dev-dependencies]
 # For mocking server
 mockito = {version = "1.0.0"}
+#test-helpers = { git = "https://github.com/Apkawa/rust-test-helpers.git" }
+test-helpers = { path = "../test_helpers" }
