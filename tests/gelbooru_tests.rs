@@ -1,8 +1,9 @@
 #[cfg(feature = "gelbooru")]
 mod gelbooru {
-    use booru_rs::{
-        client::{gelbooru::GelbooruClient, generic::*},
-        model::gelbooru::{GelbooruRating, GelbooruSort},
+    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+    use booru_rs::client::gelbooru::{
+        GelbooruClient,
+        model::{GelbooruRating, GelbooruSort},
     };
 
     #[test]
@@ -118,10 +119,5 @@ mod gelbooru {
         assert_eq!("width", GelbooruSort::Width.to_string());
         assert_eq!("source", GelbooruSort::Source.to_string());
         assert_eq!("updated", GelbooruSort::Updated.to_string());
-    }
-
-    #[test]
-    fn deserialize_json() {
-        
     }
 }

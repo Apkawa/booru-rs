@@ -1,5 +1,8 @@
 use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
-use crate::model::gelbooru::{GelbooruPost, GelbooruRating, GelbooruResponse, GelbooruSort};
+use self::model::{GelbooruPost, GelbooruRating, GelbooruResponse, GelbooruSort};
+
+#[cfg(feature = "gelbooru")]
+pub mod model;
 
 
 /// Client that sends requests to the Gelbooru API to retrieve the data.

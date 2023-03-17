@@ -1,10 +1,9 @@
-use std::ops::Deref;
-use reqwest::blocking::{Client, ClientBuilder};
-use reqwest::{IntoUrl, Proxy};
 use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
-use crate::model::danbooru::{DanbooruPost, DanbooruRating, DanbooruSort};
-use crate::utils::general::get_headers;
+use self::model::{DanbooruPost, DanbooruRating, DanbooruSort};
+
+#[cfg(feature = "danbooru")]
+pub mod model;
 
 /// Client that sends requests to the Danbooru API to retrieve the data.
 pub struct DanbooruClient {

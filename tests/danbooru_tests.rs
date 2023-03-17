@@ -1,9 +1,9 @@
 #[cfg(feature = "danbooru")]
 #[cfg(test)]
 mod danbooru {
-    use booru_rs::{
-        client::danbooru::DanbooruClient,
-        model::danbooru::{DanbooruRating, DanbooruSort},
+    use booru_rs::client::danbooru::{
+        DanbooruClient,
+        model::{DanbooruRating, DanbooruSort},
     };
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
 
