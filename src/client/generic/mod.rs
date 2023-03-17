@@ -1,3 +1,5 @@
+pub mod model;
+
 use std::fmt::Display;
 use reqwest;
 use reqwest::{IntoUrl, Proxy};
