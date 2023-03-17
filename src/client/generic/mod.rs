@@ -3,8 +3,9 @@ pub mod model;
 use std::fmt::Display;
 use reqwest;
 use reqwest::{IntoUrl, Proxy};
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use serde::de::DeserializeOwned;
-use crate::utils::general::get_headers;
+use crate::utils::general::get_default_headers;
 
 #[derive(Default)]
 pub struct BooruClientOptions {
@@ -12,6 +13,7 @@ pub struct BooruClientOptions {
     url: String,
     tags: Vec<String>,
     limit: u32,
+    headers: HeaderMap,
 }
 
 pub trait BooruClient<'a> {
@@ -49,12 +51,21 @@ pub trait BooruClient<'a> {
     /// Directly get a post by its unique Id
     fn get_by_id(&'a self, id: u32) -> Result<Self::PostModel, reqwest::Error>
     {
-        let response = self
+        let request = self
             .client()
             .get(self.url_post_by_id(id))
-            .send()?
-            .json::<Self::PostResponse>()?;
-        Ok(response.into())
+            .headers(self.options().headers.to_owned());
+        dbg!(&request);
+        let response = request.send()?;
+        dbg!(&response);
+        let text = response.text().unwrap();
+        let json = serde_json::from_str::<Self::PostResponse>(&text);
+        if json.is_err() {
+            dbg!(&text);
+            json.unwrap();
+            unreachable!()
+        }
+        Ok(json.unwrap().into())
     }
 
     fn get_with_page(&'a self, page: Option<usize>) -> Result<Vec<Self::PostModel>, reqwest::Error> {
@@ -63,6 +74,7 @@ pub trait BooruClient<'a> {
         let request = self
             .client()
             .get(url)
+            .headers(self.options().headers.to_owned())
             .query(&[
                 ("limit", self.options().limit.to_string().as_str()),
                 ("tags", &tag_string),
@@ -89,6 +101,7 @@ pub trait BooruClient<'a> {
 
 pub struct BooruClientBuilderOptions {
     pub client_builder: reqwest::blocking::ClientBuilder,
+    pub headers: HeaderMap,
     pub url: String,
     pub tags: Vec<String>,
     pub limit: u32,
@@ -107,6 +120,7 @@ impl Default for BooruClientBuilderOptions {
     fn default() -> Self {
         BooruClientBuilderOptions {
             client_builder: Default::default(),
+            headers: get_default_headers(),
             url: "".to_string(),
             tags: vec![],
             limit: 100,
@@ -116,10 +130,11 @@ impl Default for BooruClientBuilderOptions {
 
 impl From<BooruClientBuilderOptions> for BooruClientOptions {
     fn from(value: BooruClientBuilderOptions) -> Self {
+        dbg!(&value.headers);
         BooruClientOptions {
             client: value.client_builder
-                .default_headers(get_headers())
                 .build().unwrap(),
+            headers: value.headers.to_owned(),
             url: value.url.to_owned(),
             tags: value.tags.to_owned(),
             limit: value.limit,
@@ -142,7 +157,6 @@ pub trait BooruClientBuilder {
     {
         Self::default()
     }
-
     fn build(self) -> Self::Client;
 
     fn with_inner_options<F>(self, func: F) -> Self
@@ -159,6 +173,16 @@ pub trait BooruClientBuilder {
             } else {
                 options.client_builder = options.client_builder.no_proxy();
             }
+            options
+        })
+    }
+
+    fn header<K: Into<HeaderName>, V: Into<HeaderValue>>(self, key: K, value: V) -> Self
+        where
+            Self: Sized
+    {
+        self.with_inner_options(move |mut options| {
+            options.headers.insert(key.into(), value.into());
             options
         })
     }
