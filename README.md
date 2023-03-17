@@ -4,14 +4,28 @@ An async Booru client for Rust
 
 ##  Overview
 The client currently supports engine:
+
 - [x] [Danbooru](https://github.com/danbooru/danbooru)
-- [x] Gelbooru
+    * danbooru.donmai.us
+    * hijiribe.donmai.us
+    * sonohara.donmai.us
+- [x] danbooru v1
+    * behoimi.org
+- [x] Gelbooru 
+    * gelbooru.com
 - [x] Gelbooru v0.2
+    * safebooru.org
 - [x] [Moebooru](https://github.com/moebooru/moebooru)
+    * konachan.com
+    * konachan.net
+    * yande.re
+- [ ] [philomena](https://github.com/philomena-dev/philomena)
+  * derpibooru.org
+- [ ] Zerochain (=lainchan = vichan)
+  * zerochan.net
+  * kpop.asiachan.com
 - [ ] [Shimmie](https://github.com/shish/shimmie2)
 - [ ] [szurubooru](https://github.com/rr-/szurubooru)
-- [ ] [philomena](https://github.com/philomena-dev/philomena)
-- [ ] Zerochain (=lainchan = vichan)
 
 [List of boorus sites](https://github.com/red-tails/list-of-boorus/)
 
