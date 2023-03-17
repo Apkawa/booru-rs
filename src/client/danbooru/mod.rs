@@ -2,7 +2,6 @@ use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilder
 
 use self::model::{DanbooruPost, DanbooruRating, DanbooruSort};
 
-#[cfg(feature = "danbooru")]
 pub mod model;
 
 /// Client that sends requests to the Danbooru API to retrieve the data.

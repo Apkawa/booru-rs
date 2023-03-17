@@ -13,6 +13,7 @@ readme = "README.md"
 # async = []
 gelbooru = []
 danbooru = []
+moebooru = []
 
 
 [dependencies]
