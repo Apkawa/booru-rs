@@ -23,6 +23,7 @@ The client currently supports engine:
     * xbooru.com
     * tbib.org
     * hypnohub.net
+    * mspabooru.com
 - [x] [Moebooru](https://github.com/moebooru/moebooru)
     * konachan.com
     * konachan.net
@@ -33,7 +34,7 @@ The client currently supports engine:
     * furbooru.org
     * memebooru.com
     * tantabus.art
-- [ ] Zerochain (=lainchan = vichan)
+- [x] Zerochan (=lainchan = vichan)
     * zerochan.net
     * kpop.asiachan.com
 - [ ] e621ng
@@ -41,7 +42,7 @@ The client currently supports engine:
     * e926.net
 - [ ] [MyImouto](https://github.com/Yushe/myimouto-plus)
     * lolibooru.moe
-- [ ] [Shimmie](https://github.com/shish/shimmie2) !NO HAVE API!
+- [ ] ~~[Shimmie](https://github.com/shish/shimmie2)~~ !NO HAVE API!
     * shimmie.shishnet.org
     * booru.soy
     * (pokeplayer.com)[https://pokeplayer.com/shimmie/]
@@ -60,17 +61,40 @@ The client currently supports engine:
 ## Example
 
 ```rust
-let posts = GelbooruClient::builder()
-.tag("kafuu_chino")
-.tag("2girls")
-.rating(GelbooruRating::General)
-.sort(GelbooruSort::Score)
-.limit(5)
-.random(true)
-.blacklist_tag(GelbooruRating::Explicit)
-.get()
-.await
-.expect("There was an error retrieving posts from the API");
+use booru_rs::client::danbooru::{
+  DanbooruClient,
+  DanbooruRating, DanbooruSort, DanbooruPost
+};
+use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+
+#[test]
+fn get_posts_with_tag() {
+  let posts = DanbooruClient::builder()
+          .default_url("https://testbooru.donmai.us")
+          .tag("kafuu_chino")
+          .tag("2girls")
+          .rating(DanbooruRating::General)
+          .sort(DanbooruSort::Score)
+          .limit(5)
+          .build()
+          .get()
+          .unwrap();
+
+  assert!(!posts.is_empty());
+}
+
+#[test]
+fn get_post_by_id() {
+  let post = DanbooruClient::builder()
+          .default_url("https://testbooru.donmai.us")
+          .build()
+          .get_by_id(9423)
+          .unwrap();
+
+  assert_eq!(
+    post.id, 9423
+  );
+}
 ```
 
 [ci-badge]: https://img.shields.io/github/actions/workflow/status/ajiiisai/booru-rs/ci.yml?branch=main
@@ -83,4 +107,3 @@ let posts = GelbooruClient::builder()
 
 * https://github.com/sinkaroid/booru
 * https://github.com/Shiroechi/BooruDex
-* 
