@@ -10,11 +10,11 @@ use crate::utils::general::get_default_headers;
 
 #[derive(Default)]
 pub struct BooruClientOptions {
-    client: reqwest::blocking::Client,
-    url: String,
-    tags: Vec<String>,
-    limit: u32,
-    headers: HeaderMap,
+    pub(crate) client: reqwest::blocking::Client,
+    pub(crate) url: String,
+    pub(crate) tags: Vec<String>,
+    pub(crate) limit: u32,
+    pub(crate) headers: HeaderMap,
 }
 
 pub trait BooruClient<'a> {

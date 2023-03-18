@@ -3,9 +3,8 @@
 mod danbooru {
     use booru_rs::client::danbooru::{
         DanbooruClient,
-        model::{DanbooruRating, DanbooruSort},
+        DanbooruRating, DanbooruSort, DanbooruPost
     };
-    use booru_rs::client::danbooru::model::DanbooruPost;
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
     use crate::helpers::load_json_fixture;
 

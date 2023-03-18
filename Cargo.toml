@@ -9,12 +9,20 @@ repository = "https://github.com/ajiiisai/booru-rs"
 readme = "README.md"
 
 [features]
+default = [
+    "gelbooru",
+    "danbooru",
+    "moebooru",
+    "philomena",
+    "zerochan"
+]
 # TODO
 # async = []
 gelbooru = []
 danbooru = []
 moebooru = []
 philomena = []
+zerochan = []
 
 
 [dependencies]

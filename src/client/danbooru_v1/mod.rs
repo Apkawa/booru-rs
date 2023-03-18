@@ -1,5 +1,5 @@
 use reqwest::header;
-use reqwest::header::{HeaderName, HeaderValue};
+use reqwest::header::HeaderValue;
 
 /// Danbooru V1 old API
 /// http://behoimi.org/help/api

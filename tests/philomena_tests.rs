@@ -1,8 +1,10 @@
 
+#[cfg(feature = "philomena")]
+#[cfg(test)]
 mod philomena {
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
     use booru_rs::client::philomena::{PhilomenaClient, PhilomenaDetailResponse, PhilomenaListResponse, PhilomenaPost};
-    use crate::helpers::{load_json_fixture, proxy};
+    use crate::helpers::load_json_fixture;
 
     #[test]
     fn get_posts_with_tag() {

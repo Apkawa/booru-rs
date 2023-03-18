@@ -1,6 +1,6 @@
 use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
-use self::model::{DanbooruPost, DanbooruRating, DanbooruSort};
+pub use self::model::{DanbooruPost, DanbooruRating, DanbooruSort};
 
 pub mod model;
 

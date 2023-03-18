@@ -10,5 +10,7 @@ pub mod gelbooru;
 pub mod gelbooru_v0_2;
 #[cfg(feature = "moebooru")]
 pub mod moebooru;
-
+#[cfg(feature = "philomena")]
 pub mod philomena;
+#[cfg(feature = "zerochan")]
+pub mod zerochan;

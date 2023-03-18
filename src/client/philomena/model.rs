@@ -3,7 +3,6 @@
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
-use crate::client::philomena::PhilomenaRating::Grimdark;
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

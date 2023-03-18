@@ -1,5 +1,6 @@
 #[cfg(feature = "gelbooru")]
-mod gelbooru {
+#[cfg(test)]
+mod gelbooru_v02 {
     use booru_rs::client::gelbooru_v0_2::GelbooruClientV0_2;
     use booru_rs::client::gelbooru_v0_2::model::GelbooruPostV0_2;
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};

@@ -1,6 +1,4 @@
 use std::collections::HashMap;
-use reqwest::Url;
-use serde_json::to_string;
 use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
 pub use self::model::{PhilomenaDetailResponse, PhilomenaListResponse, PhilomenaPost, PhilomenaRating, PhilomenaSort};
