@@ -20,6 +20,12 @@ pub struct GelbooruPost {
     pub md5: String,
     /// Post's image file url
     pub file_url: String,
+    pub preview_url: String,
+
+    pub sample_url: String,
+    pub sample: bool,
+    pub sample_height: u32,
+    pub sample_width: u32,
     /// Post's tags
     pub tags: String,
     /// Post's image name (with extension)
@@ -28,7 +34,24 @@ pub struct GelbooruPost {
     pub source: String,
     /// Post's rating
     pub rating: GelbooruRating,
+
+
+    pub directory: String,
+    pub change: u32,
+    pub owner: String,
+    pub creator_id: u32,
+    pub parent_id: u32,
+    pub preview_height: u32,
+    pub preview_width: u32,
+    pub title: String,
+    pub has_notes: String,
+    pub has_comments: String,
+    pub status: String,
+    pub post_locked: u32,
+    pub has_children: String,
 }
+
+
 
 /// Gelbooru's API response with a list a posts
 #[derive(Serialize, Deserialize, Debug)]

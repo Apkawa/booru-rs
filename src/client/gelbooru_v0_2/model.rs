@@ -26,8 +26,8 @@ pub struct GelbooruPostV0_2 {
     pub parent_id: i64,
     pub rating: String,
     pub sample: bool,
-    pub sample_height: i64,
-    pub sample_width: i64,
+    pub sample_height: u32,
+    pub sample_width: u32,
 }
 
 

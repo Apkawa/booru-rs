@@ -13,7 +13,8 @@ pub struct MoebooruPost {
     pub author: String,
     pub change: u32,
     pub source: String,
-    pub score: i32,
+    // for compatibly myimouto
+    // pub score: i32,
     pub md5: String,
     pub file_size: usize,
     pub file_url: String,

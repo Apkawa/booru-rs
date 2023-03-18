@@ -1,7 +1,6 @@
 #[cfg(feature = "zerochan")]
 #[cfg(test)]
 mod zerochan {
-    use std::fs::read_to_string;
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
     use booru_rs::client::zerochan::{ZerochanClient, ZerochanListResponse, ZerochanPost};
     use crate::helpers::{load_json_fixture, proxy};

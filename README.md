@@ -29,6 +29,8 @@ The client currently supports engine:
     * konachan.net
     * yande.re
     * sakugabooru.com
+- [x] [MyImouto](https://github.com/Yushe/myimouto-plus) Compatibly with Moebooru
+    * lolibooru.moe
 - [x] [philomena](https://github.com/philomena-dev/philomena)
     * derpibooru.org
     * furbooru.org
@@ -40,8 +42,6 @@ The client currently supports engine:
 - [x] [e621ng](https://e621.net/help/api)
     * e621.net
     * e926.net
-- [ ] [MyImouto](https://github.com/Yushe/myimouto-plus)
-    * lolibooru.moe
 - [ ] ~~[Shimmie](https://github.com/shish/shimmie2)~~ !NO HAVE API!
     * shimmie.shishnet.org
     * booru.soy
@@ -62,38 +62,38 @@ The client currently supports engine:
 
 ```rust
 use booru_rs::client::danbooru::{
-  DanbooruClient,
-  DanbooruRating, DanbooruSort, DanbooruPost
+    DanbooruClient,
+    DanbooruRating, DanbooruSort, DanbooruPost
 };
 use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
 
 #[test]
 fn get_posts_with_tag() {
-  let posts = DanbooruClient::builder()
-          .default_url("https://testbooru.donmai.us")
-          .tag("kafuu_chino")
-          .tag("2girls")
-          .rating(DanbooruRating::General)
-          .sort(DanbooruSort::Score)
-          .limit(5)
-          .build()
-          .get()
-          .unwrap();
+    let posts = DanbooruClient::builder()
+        .default_url("https://testbooru.donmai.us")
+        .tag("kafuu_chino")
+        .tag("2girls")
+        .rating(DanbooruRating::General)
+        .sort(DanbooruSort::Score)
+        .limit(5)
+        .build()
+        .get()
+        .unwrap();
 
-  assert!(!posts.is_empty());
+    assert!(!posts.is_empty());
 }
 
 #[test]
 fn get_post_by_id() {
-  let post = DanbooruClient::builder()
-          .default_url("https://testbooru.donmai.us")
-          .build()
-          .get_by_id(9423)
-          .unwrap();
+    let post = DanbooruClient::builder()
+        .default_url("https://testbooru.donmai.us")
+        .build()
+        .get_by_id(9423)
+        .unwrap();
 
-  assert_eq!(
-    post.id, 9423
-  );
+    assert_eq!(
+        post.id, 9423
+    );
 }
 ```
 
