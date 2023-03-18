@@ -1,0 +1,90 @@
+{
+  "post": {
+    "id": 3937132,
+    "created_at": "2023-03-17T23:34:35.053-04:00",
+    "updated_at": "2023-03-18T07:00:49.330-04:00",
+    "file": {
+      "width": 480,
+      "height": 640,
+      "ext": "gif",
+      "size": 1090112,
+      "md5": "79f8a297a13a3e1e9c5bb8e2223908ff",
+      "url": "https://static1.e621.net/data/79/f8/79f8a297a13a3e1e9c5bb8e2223908ff.gif"
+    },
+    "preview": {
+      "width": 112,
+      "height": 150,
+      "url": "https://static1.e621.net/data/preview/79/f8/79f8a297a13a3e1e9c5bb8e2223908ff.jpg"
+    },
+    "sample": {
+      "has": false,
+      "height": 640,
+      "width": 480,
+      "url": "https://static1.e621.net/data/79/f8/79f8a297a13a3e1e9c5bb8e2223908ff.gif",
+      "alternates": {}
+    },
+    "score": {
+      "up": 28,
+      "down": 0,
+      "total": 28
+    },
+    "tags": {
+      "general": [
+        "collar",
+        "feral",
+        "food",
+        "jelly_(food)",
+        "male",
+        "meow",
+        "solo",
+        "tail",
+        "tail_motion"
+      ],
+      "species": [
+        "domestic_cat",
+        "felid",
+        "feline",
+        "felis",
+        "mammal"
+      ],
+      "character": [],
+      "copyright": [],
+      "artist": [],
+      "invalid": [
+        "small_(disambiguation)"
+      ],
+      "lore": [],
+      "meta": [
+        "animated"
+      ]
+    },
+    "locked_tags": [],
+    "change_seq": 47531462,
+    "flags": {
+      "pending": true,
+      "flagged": false,
+      "note_locked": false,
+      "status_locked": false,
+      "rating_locked": false,
+      "comment_disabled": false,
+      "deleted": false
+    },
+    "rating": "s",
+    "fav_count": 30,
+    "sources": [],
+    "pools": [],
+    "relationships": {
+      "parent_id": null,
+      "has_children": false,
+      "has_active_children": false,
+      "children": []
+    },
+    "approver_id": null,
+    "uploader_id": 1402130,
+    "description": "",
+    "comment_count": 0,
+    "is_favorited": false,
+    "has_notes": false,
+    "duration": null
+  }
+}

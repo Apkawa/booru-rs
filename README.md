@@ -37,7 +37,7 @@ The client currently supports engine:
 - [x] Zerochan (=lainchan = vichan)
     * zerochan.net
     * kpop.asiachan.com
-- [ ] e621ng
+- [x] [e621ng](https://e621.net/help/api)
     * e621.net
     * e926.net
 - [ ] [MyImouto](https://github.com/Yushe/myimouto-plus)

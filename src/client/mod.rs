@@ -14,3 +14,5 @@ pub mod moebooru;
 pub mod philomena;
 #[cfg(feature = "zerochan")]
 pub mod zerochan;
+#[cfg(feature = "e621ng")]
+pub mod e621ng;

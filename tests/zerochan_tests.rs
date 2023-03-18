@@ -31,6 +31,13 @@ mod zerochan {
     }
 
     #[test]
+    fn posts_deserialize_json() {
+        let json: ZerochanListResponse = serde_json::from_str(load_json_fixture("zerochan/posts").as_str()).unwrap();
+        let model: Vec<ZerochanPost> = json.into();
+        assert_eq!(model.len(), 24);
+    }
+
+    #[test]
     fn post_deserialize_json() {
         let json: ZerochanPost = serde_json::from_str(load_json_fixture("zerochan/post_id").as_str()).unwrap();
         let model: ZerochanPost = json.into();
