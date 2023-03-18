@@ -20,10 +20,14 @@ pub struct GelbooruPost {
     pub md5: String,
     /// Post's image file url
     pub file_url: String,
+
     pub preview_url: String,
+    pub preview_height: u32,
+    pub preview_width: u32,
 
     pub sample_url: String,
-    pub sample: bool,
+    // TODO deserialize from int
+    // pub sample: bool,
     pub sample_height: u32,
     pub sample_width: u32,
     /// Post's tags
@@ -35,14 +39,11 @@ pub struct GelbooruPost {
     /// Post's rating
     pub rating: GelbooruRating,
 
-
     pub directory: String,
     pub change: u32,
     pub owner: String,
     pub creator_id: u32,
     pub parent_id: u32,
-    pub preview_height: u32,
-    pub preview_width: u32,
     pub title: String,
     pub has_notes: String,
     pub has_comments: String,
