@@ -15,11 +15,14 @@ pub struct ZerochanPost {
     pub width: u32,
     pub height: u32,
     pub size: usize,
+    /// md5
     pub hash: Option<String>,
     pub source: Option<String>,
     pub primary: String,
     pub tags: Vec<String>,
 }
+
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ZerochanListResponse {
