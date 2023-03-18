@@ -11,3 +11,5 @@ mod gelbooru_v0_2_tests;
 #[cfg(feature = "moebooru")]
 mod moebooru_tests;
 
+mod philomena_tests;
+

@@ -10,3 +10,5 @@ pub mod gelbooru;
 pub mod gelbooru_v0_2;
 #[cfg(feature = "moebooru")]
 pub mod moebooru;
+
+pub mod philomena;

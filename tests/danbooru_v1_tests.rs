@@ -1,9 +1,11 @@
-#[cfg(feature = "gelbooru")]
-mod gelbooru {
+#[cfg(feature = "danbooru")]
+#[cfg(test)]
+mod danbooru_v1 {
+
     use booru_rs::client::danbooru_v1::{DanbooruClientV1, DanbooruPostV1};
     use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
 
-    use crate::helpers::{load_json_fixture, proxy};
+    use crate::helpers::load_json_fixture;
 
     #[test]
     fn get_posts_with_tag() {
@@ -38,5 +40,3 @@ mod gelbooru {
         assert_eq!(model.id, 650866);
     }
 }
-
-

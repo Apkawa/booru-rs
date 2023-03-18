@@ -1,5 +1,6 @@
 use reqwest::header;
 use reqwest::header::{HeaderName, HeaderValue};
+
 /// Danbooru V1 old API
 /// http://behoimi.org/help/api
 /// http://behoimi.org/help/cheatsheet
@@ -20,10 +21,10 @@ impl BooruClient<'_> for DanbooruClientV1 {
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
     const PATH_POST_BY_ID: &'static str = "post/index.json?tags=id:{id}";
-    const PATH_POST: &'static str = "post/index.json?page={page}";
+    const PATH_POST: &'static str = "post/index.json?page={page}&tags={tags}&limit={limit}";
 
-    fn new(options: BooruClientBuilderOptions) -> Self {
-        DanbooruClientV1 { options: options.into() }
+    fn new(builder: Self::Builder) -> Self {
+        DanbooruClientV1 { options: builder.options.into() }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -60,6 +61,6 @@ impl BooruClientBuilder for DanbooruClientBuilderV1 {
 
     fn build(self) -> Self::Client
         where Self: Sized {
-        Self::Client::new(self.options)
+        Self::Client::new(self)
     }
 }

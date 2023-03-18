@@ -1,5 +1,6 @@
 pub mod model;
 
+use std::collections::HashMap;
 use std::fmt::Display;
 use reqwest;
 use reqwest::{IntoUrl, Proxy};
@@ -29,7 +30,7 @@ pub trait BooruClient<'a> {
         Self::Builder::new()
     }
 
-    fn new(options: BooruClientBuilderOptions) -> Self;
+    fn new(builder: Self::Builder) -> Self;
 
     fn options(&'a self) -> &'a BooruClientOptions;
 
@@ -44,8 +45,13 @@ pub trait BooruClient<'a> {
 
     fn url_posts(&'a self, page: Option<usize>) -> String {
         let page = page.unwrap_or(1);
+        let tag_string = self.options().tags.join(" ");
+        let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
-        [&self.options().url, Self::PATH_POST].join("/").replace("{page}", &page.to_string())
+        [&self.options().url, Self::PATH_POST].join("/")
+            .replace("{page}", &page.to_string())
+            .replace("{limit}", &self.options().limit.to_string())
+            .replace("{tags}", &tag_string.collect::<String>())
     }
 
     /// Directly get a post by its unique Id
@@ -68,17 +74,20 @@ pub trait BooruClient<'a> {
         Ok(json.unwrap().into())
     }
 
+    fn get_extra_query(&'a self) -> HashMap<String, String> {
+        HashMap::new()
+    }
+
     fn get_with_page(&'a self, page: Option<usize>) -> Result<Vec<Self::PostModel>, reqwest::Error> {
-        let tag_string = self.options().tags.join(" ");
         let url = self.url_posts(page);
+        let extra_query = self.get_extra_query();
+        let extra_query: Vec<_> = extra_query.iter().collect();
         let request = self
             .client()
             .get(url)
             .headers(self.options().headers.to_owned())
-            .query(&[
-                ("limit", self.options().limit.to_string().as_str()),
-                ("tags", &tag_string),
-            ]);
+            .query(&extra_query);
+
         dbg!(&request);
         let response = request.send()?;
         dbg!(&response);
@@ -101,6 +110,7 @@ pub trait BooruClient<'a> {
 
 pub struct BooruClientBuilderOptions {
     pub client_builder: reqwest::blocking::ClientBuilder,
+    pub proxy: Option<Proxy>,
     pub headers: HeaderMap,
     pub url: String,
     pub tags: Vec<String>,
@@ -120,6 +130,7 @@ impl Default for BooruClientBuilderOptions {
     fn default() -> Self {
         BooruClientBuilderOptions {
             client_builder: Default::default(),
+            proxy: None,
             headers: get_default_headers(),
             url: "".to_string(),
             tags: vec![],
@@ -131,9 +142,16 @@ impl Default for BooruClientBuilderOptions {
 impl From<BooruClientBuilderOptions> for BooruClientOptions {
     fn from(value: BooruClientBuilderOptions) -> Self {
         dbg!(&value.headers);
+        let mut client_builder = value.client_builder;
+        if let Some(proxy) = value.proxy {
+            client_builder = client_builder.proxy(proxy);
+        } else {
+            client_builder = client_builder.no_proxy();
+        }
         BooruClientOptions {
-            client: value.client_builder
-                .build().unwrap(),
+            client: client_builder
+                .build()
+                .unwrap(),
             headers: value.headers.to_owned(),
             url: value.url.to_owned(),
             tags: value.tags.to_owned(),
@@ -167,12 +185,11 @@ pub trait BooruClientBuilder {
             Self: Sized
     {
         self.with_inner_options(move |mut options| {
-            if let Some(proxy) = proxy {
-                let proxy = Proxy::all(proxy).unwrap();
-                options.client_builder = options.client_builder.proxy(proxy);
+            options.proxy = if let Some(proxy) = proxy {
+                Some(Proxy::all(proxy).unwrap())
             } else {
-                options.client_builder = options.client_builder.no_proxy();
-            }
+                None
+            };
             options
         })
     }

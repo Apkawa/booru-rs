@@ -15,10 +15,10 @@ impl BooruClient<'_> for MoebooruClient {
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
     const PATH_POST_BY_ID: &'static str = "post.json?tags=id:{id}";
-    const PATH_POST: &'static str = "post.json?page={page}";
+    const PATH_POST: &'static str = "post.json?page={page}&tags={tags}&limit={limit}";
 
-    fn new(options: BooruClientBuilderOptions) -> Self {
-        MoebooruClient { options: options.into() }
+    fn new(builder: Self::Builder) -> Self {
+        MoebooruClient { options: builder.options.into() }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -53,6 +53,6 @@ impl BooruClientBuilder for MoebooruClientBuilder {
 
     fn build(self) -> Self::Client
         where Self: Sized {
-        Self::Client::new(self.options)
+        Self::Client::new(self)
     }
 }

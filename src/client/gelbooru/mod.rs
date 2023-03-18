@@ -16,10 +16,10 @@ impl BooruClient<'_> for GelbooruClient {
     type PostResponse = GelbooruResponse;
     type PostListResponse = GelbooruResponse;
     const PATH_POST_BY_ID: &'static str = "index.php?page=dapi&s=post&q=index&json=1&id={id}";
-    const PATH_POST: &'static str = "index.php?page=dapi&s=post&q=index&json=1&pid={page}";
+    const PATH_POST: &'static str = "index.php?page=dapi&s=post&q=index&json=1&pid={page}&tags={tags}&limit={limit}";
 
-    fn new(options: BooruClientBuilderOptions) -> Self {
-        GelbooruClient { options: options.into() }
+    fn new(builder: Self::Builder) -> Self {
+        GelbooruClient { options: builder.options.into() }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -45,10 +45,9 @@ impl BooruClientBuilder for GelbooruClientBuilder {
             options: BooruClientBuilderOptions::with_url(Self::BASE_URL)
         }
     }
-
     fn build(self) -> Self::Client
         where Self: Sized {
-        Self::Client::new(self.options)
+        Self::Client::new(self)
     }
 
     fn random(self, random: bool) -> Self {

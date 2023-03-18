@@ -15,11 +15,12 @@ impl BooruClient<'_> for DanbooruClient {
     type PostResponse = Self::PostModel;
     type PostListResponse = Vec<Self::PostModel>;
     const PATH_POST_BY_ID: &'static str = "posts/{id}.json";
-    const PATH_POST: &'static str = "posts.json?page={page}";
+    const PATH_POST: &'static str = "posts.json?page={page}&tags={tags}&limit={limit}";
 
-    fn new(options: BooruClientBuilderOptions) -> Self {
-        DanbooruClient { options: options.into() }
+    fn new(builder: Self::Builder) -> Self {
+        DanbooruClient { options: builder.options.into() }
     }
+
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
@@ -52,6 +53,6 @@ impl BooruClientBuilder for DanbooruClientBuilder {
 
     fn build(self) -> Self::Client
         where Self: Sized {
-        Self::Client::new(self.options)
+        Self::Client::new(self)
     }
 }
