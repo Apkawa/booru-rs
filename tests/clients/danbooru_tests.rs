@@ -133,7 +133,7 @@ mod danbooru {
     fn post_deserialize_json() {
         let json: DanbooruPost =
             serde_json::from_str(load_json_fixture("danbooru/post_id").as_str()).unwrap();
-        let model: DanbooruPost = json.into();
+        let model: DanbooruPost = json;
         assert_eq!(model.id, 6148688);
     }
     #[test]

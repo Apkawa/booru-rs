@@ -37,7 +37,7 @@ mod zerochan {
     fn post_deserialize_json() {
         let json: ZerochanPost =
             serde_json::from_str(load_json_fixture("zerochan/post_id").as_str()).unwrap();
-        let model: ZerochanPost = json.into();
+        let model: ZerochanPost = json;
         assert_eq!(model.id, 3914235);
     }
 
@@ -45,7 +45,7 @@ mod zerochan {
     fn post_booru_model_trait() {
         let json: ZerochanPost =
             serde_json::from_str(load_json_fixture("zerochan/post_id").as_str()).unwrap();
-        let model: ZerochanPost = json.into();
+        let model: ZerochanPost = json;
         assert_eq!(model.id().to_string(), model.id.to_string());
         assert_eq!(
             model.hash().as_ref().unwrap().to_string().as_str(),
