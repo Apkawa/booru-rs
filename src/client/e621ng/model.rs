@@ -115,6 +115,10 @@ impl BooruPostModel for E621ngPost {
     fn character(&self) -> Vec<String> {
         self.tags.character.to_owned()
     }
+
+    fn created(&self) -> Option<Cow<str>> {
+        Some(self.created_at.as_str().into())
+    }
 }
 
 // #[derive(Serialize, Deserialize)]

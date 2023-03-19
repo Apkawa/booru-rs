@@ -5,6 +5,7 @@ use crate::client::generic::{
 
 #[cfg(feature = "gelbooru")]
 pub mod model;
+mod format;
 
 /// Client that sends requests to the Gelbooru >=v0.2.5 API to retrieve the data.
 pub struct GelbooruClient {

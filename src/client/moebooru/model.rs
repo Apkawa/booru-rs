@@ -2,15 +2,18 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
-use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
+
+use crate::client::generic::BooruPostModel;
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::utils::dt::timestamp_to_rfc_3339;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MoebooruPost {
     pub id: u32,
     pub tags: String,
-    pub created_at: u32,
+    #[serde(with = "timestamp_to_rfc_3339")]
+    pub created_at: String,
     pub creator_id: u32,
     pub author: String,
     pub change: u32,
@@ -79,6 +82,10 @@ impl BooruPostModel for MoebooruPost {
     fn tags(&self) -> Vec<String> {
         // TODO use Cow
         self.tags.split(" ").map(ToOwned::to_owned).collect()
+    }
+
+    fn created(&self) -> Option<Cow<str>> {
+        Some(self.created_at.as_str().into())
     }
 }
 

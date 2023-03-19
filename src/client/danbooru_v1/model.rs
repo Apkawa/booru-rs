@@ -2,9 +2,11 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
-use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
+
+use crate::client::generic::BooruPostModel;
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::utils::dt::timestamp_to_rfc_3339;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DanbooruPostV1 {
@@ -76,12 +78,17 @@ impl BooruPostModel for DanbooruPostV1 {
         // TODO use Cow
         self.tags.split(" ").map(ToOwned::to_owned).collect()
     }
+
+    fn created(&self) -> Option<Cow<str>> {
+        Some(self.created_at.s.as_str().into())
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CreatedAt {
-    pub n: i64,
-    pub s: i64,
+    pub n: u64,
+    #[serde(with = "timestamp_to_rfc_3339")]
+    pub s: String,
     pub json_class: String,
 }
 

@@ -38,6 +38,8 @@ mod danbooru_v1 {
             serde_json::from_str(load_json_fixture("danbooru_v1/post_id").as_str()).unwrap();
         let model: DanbooruPostV1 = json.into();
         assert_eq!(model.id, 650866);
+        assert_eq!(model.created_at.s, "2023-03-16T14:34:09Z".to_string())
+
     }
 
     #[test]
@@ -54,6 +56,7 @@ mod danbooru_v1 {
         assert_eq!(
             images.original.as_ref().unwrap().url.to_string(),
             model.file_url
-        )
+        );
+        assert_eq!(model.created().unwrap().to_string(), model.created_at.s)
     }
 }
