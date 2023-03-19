@@ -79,9 +79,10 @@ impl BooruPostModel for MoebooruPost {
         }
     }
 
-    fn tags(&self) -> Vec<String> {
-        // TODO use Cow
-        self.tags.split(" ").map(ToOwned::to_owned).collect()
+    fn tags(&self) -> Vec<Cow<str>> {
+        self.tags.split(" ")
+            .map(Into::into)
+            .collect()
     }
 
     fn created(&self) -> Option<Cow<str>> {

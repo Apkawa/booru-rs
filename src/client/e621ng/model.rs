@@ -93,15 +93,14 @@ impl BooruPostModel for E621ngPost {
         }
     }
 
-    fn tags(&self) -> Vec<String> {
-        // TODO use Cow
+    fn tags(&self) -> Vec<Cow<str>> {
         [].iter()
             .chain(self.tags.artist.iter())
             .chain(self.tags.character.iter())
             .chain(self.tags.general.iter())
             .chain(self.tags.species.iter())
             .chain(self.tags.meta.iter())
-            .map(ToOwned::to_owned)
+            .map(Into::into)
             .collect()
     }
 
@@ -112,8 +111,10 @@ impl BooruPostModel for E621ngPost {
             Some(self.tags.artist[0].as_str().into())
         }
     }
-    fn character(&self) -> Vec<String> {
-        self.tags.character.to_owned()
+    fn character(&self) -> Vec<Cow<str>> {
+        self.tags.character.iter()
+            .map(Into::into)
+            .collect()
     }
 
     fn created(&self) -> Option<Cow<str>> {

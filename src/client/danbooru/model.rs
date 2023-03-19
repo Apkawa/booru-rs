@@ -79,15 +79,17 @@ impl BooruPostModel for DanbooruPost {
         Some(self.source.as_str().into())
     }
 
-    fn tags(&self) -> Vec<String> {
+    fn tags(&self) -> Vec<Cow<str>> {
         // TODO use Cow
-        self.tag_string.split(" ").map(ToOwned::to_owned).collect()
+        self.tag_string.split(" ")
+            .map(Into::into)
+            .collect()
     }
 
-    fn character(&self) -> Vec<String> {
+    fn character(&self) -> Vec<Cow<str>> {
         self.tag_string_character
             .split(" ")
-            .map(ToOwned::to_owned)
+            .map(Into::into)
             .collect()
     }
 
