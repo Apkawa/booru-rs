@@ -2,16 +2,15 @@
 #[cfg(test)]
 mod zerochan {
     use crate::helpers::{load_json_fixture, proxy};
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
     use booru_rs::client::zerochan::{ZerochanClient, ZerochanListResponse, ZerochanPost};
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = ZerochanClient::builder()
+        let posts = ZerochanClient::new()
             .proxy(proxy())
             .limit(100)
             .tag("Shampoo (Ranma ½)")
-            .build()
             .get()
             .unwrap();
 
@@ -21,9 +20,8 @@ mod zerochan {
 
     #[test]
     fn get_post_by_id() {
-        let post = ZerochanClient::builder()
+        let post = ZerochanClient::new()
             .proxy(proxy())
-            .build()
             .get_by_id(3914229);
 
         assert_eq!(post.unwrap().id, 3914229);

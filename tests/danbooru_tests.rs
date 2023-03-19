@@ -3,14 +3,13 @@
 mod danbooru {
     use crate::helpers::load_json_fixture;
     use booru_rs::client::danbooru::{DanbooruClient, DanbooruPost, DanbooruRating, DanbooruSort};
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
-            .build()
             .get()
             .unwrap();
 
@@ -19,11 +18,10 @@ mod danbooru {
 
     #[test]
     fn get_posts_with_rating() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .rating(DanbooruRating::General)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -32,11 +30,10 @@ mod danbooru {
 
     #[test]
     fn get_posts_with_sort() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .order(DanbooruSort::Rating)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -45,11 +42,10 @@ mod danbooru {
 
     #[test]
     fn get_posts_with_blacklist_tag() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .blacklist_tag(DanbooruRating::Explicit)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -58,11 +54,10 @@ mod danbooru {
 
     #[test]
     fn get_posts_with_limit() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .limit(3)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -71,12 +66,11 @@ mod danbooru {
 
     #[test]
     fn get_posts_multiple_tags() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .tag("bangs")
             .limit(3)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -85,11 +79,10 @@ mod danbooru {
 
     #[test]
     fn get_random_posts() {
-        let posts = DanbooruClient::builder()
+        let posts = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
             .tag("kafuu_chino")
             .random(true)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -98,9 +91,8 @@ mod danbooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = DanbooruClient::builder()
+        let post = DanbooruClient::new()
             .default_url("https://testbooru.donmai.us")
-            .build()
             .get_by_id(9423);
 
         assert!(post.is_ok());

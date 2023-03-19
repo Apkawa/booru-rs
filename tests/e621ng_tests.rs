@@ -4,15 +4,14 @@ mod e621ng {
     use crate::helpers::{load_json_fixture, proxy};
     use booru_rs::client::e621ng::model::{E621ngDetailResponse, E621ngListResponse};
     use booru_rs::client::e621ng::{E621ngClient, E621ngPost};
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = E621ngClient::builder()
+        let posts = E621ngClient::new()
             .proxy(proxy())
             .limit(100)
             .tag("domestic_cat")
-            .build()
             .get()
             .unwrap();
 
@@ -22,9 +21,8 @@ mod e621ng {
 
     #[test]
     fn get_post_by_id() {
-        let post = E621ngClient::builder()
+        let post = E621ngClient::new()
             .proxy(proxy())
-            .build()
             .get_by_id(3937132);
 
         assert_eq!(post.unwrap().id, 3937132);
