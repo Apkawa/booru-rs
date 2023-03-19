@@ -20,9 +20,7 @@ impl BooruClient for DanbooruClient {
     const PATH_POST: &'static str = "posts.json?page={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        DanbooruClient {
-            options: options.into(),
-        }
+        DanbooruClient { options }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -31,7 +29,11 @@ impl BooruClient for DanbooruClient {
 }
 
 impl BooruOptionBuilder for DanbooruClient {
-    fn with_inner_options<F>(mut self, func: F) -> Self where F: FnOnce(BooruClientOptions) -> BooruClientOptions, Self: Sized {
+    fn with_inner_options<F>(mut self, func: F) -> Self
+    where
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+        Self: Sized,
+    {
         self.options = func(self.options);
         self
     }

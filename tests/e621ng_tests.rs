@@ -21,9 +21,7 @@ mod e621ng {
 
     #[test]
     fn get_post_by_id() {
-        let post = E621ngClient::new()
-            .proxy(proxy())
-            .get_by_id(3937132);
+        let post = E621ngClient::new().proxy(proxy()).get_by_id(3937132);
 
         assert_eq!(post.unwrap().id, 3937132);
     }
@@ -62,8 +60,11 @@ mod e621ng {
 
         let tags = model.tags();
         assert!(tags.len() > 0);
-        println!("{:p}, {:p} {:p}", &tags,
-                 tags[0].as_ref(),
-                 model.tags.general[0].as_str());
+        println!(
+            "{:p}, {:p} {:p}",
+            &tags,
+            tags[0].as_ref(),
+            model.tags.general[0].as_str()
+        );
     }
 }

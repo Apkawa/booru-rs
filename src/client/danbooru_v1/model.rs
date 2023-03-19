@@ -4,8 +4,8 @@ use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::generic::BooruPostModel;
 use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use crate::utils::dt::timestamp_to_rfc_3339;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -48,7 +48,7 @@ impl BooruPostModel for DanbooruPostV1 {
     }
 
     fn hash(&self) -> Option<ImageHash> {
-        Some(ImageHash::MD5(self.md5.as_str().into()))
+        Some(ImageHash::MD5(self.md5.as_str()))
     }
 
     fn images(&self) -> Images {
@@ -67,7 +67,7 @@ impl BooruPostModel for DanbooruPostV1 {
     }
 
     fn source_url(&self) -> Option<Cow<str>> {
-        if self.source.len() > 0 {
+        if !self.source.is_empty() {
             Some(self.source.as_str().into())
         } else {
             None
@@ -75,9 +75,7 @@ impl BooruPostModel for DanbooruPostV1 {
     }
 
     fn tags(&self) -> Vec<Cow<str>> {
-        self.tags.split(" ")
-            .map(Into::into)
-            .collect()
+        self.tags.split(' ').map(Into::into).collect()
     }
 
     fn created(&self) -> Option<Cow<str>> {

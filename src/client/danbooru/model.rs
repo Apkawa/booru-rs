@@ -81,14 +81,12 @@ impl BooruPostModel for DanbooruPost {
 
     fn tags(&self) -> Vec<Cow<str>> {
         // TODO use Cow
-        self.tag_string.split(" ")
-            .map(Into::into)
-            .collect()
+        self.tag_string.split(' ').map(Into::into).collect()
     }
 
     fn character(&self) -> Vec<Cow<str>> {
         self.tag_string_character
-            .split(" ")
+            .split(' ')
             .map(Into::into)
             .collect()
     }

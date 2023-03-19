@@ -9,10 +9,7 @@ mod philomena {
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = PhilomenaClient::new()
-            .tag("safe")
-            .get()
-            .unwrap();
+        let posts = PhilomenaClient::new().tag("safe").get().unwrap();
 
         assert!(!posts.is_empty());
     }

@@ -57,7 +57,7 @@ impl BooruPostModel for PhilomenaPost {
     }
 
     fn hash(&self) -> Option<ImageHash> {
-        Some(ImageHash::SHA512(self.sha512_hash.as_str().into()))
+        Some(ImageHash::SHA512(self.sha512_hash.as_str()))
     }
 
     fn images(&self) -> Images {
@@ -73,17 +73,11 @@ impl BooruPostModel for PhilomenaPost {
     }
 
     fn source_url(&self) -> Option<Cow<str>> {
-        if let Some(source) = self.source_url.as_ref() {
-            Some(source.into())
-        } else {
-            None
-        }
+        self.source_url.as_ref().map(|source| source.into())
     }
 
     fn tags(&self) -> Vec<Cow<str>> {
-        self.tags.iter()
-            .map(Into::into)
-            .collect()
+        self.tags.iter().map(Into::into).collect()
     }
 
     fn created(&self) -> Option<Cow<str>> {

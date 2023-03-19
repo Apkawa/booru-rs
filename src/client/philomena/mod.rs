@@ -36,9 +36,7 @@ impl BooruClient for PhilomenaClient {
     }
 
     fn with_options(options: BooruClientOptions) -> Self {
-        PhilomenaClient {
-            options: options.into(),
-        }
+        PhilomenaClient { options }
     }
 
     fn url_posts(&self) -> String {
@@ -48,7 +46,7 @@ impl BooruClient for PhilomenaClient {
 
         if let Some(random) = options.random.as_ref() {
             if *random {
-                tag_string.push_str(format!(" sort:random").as_str());
+                tag_string.push_str(" sort:random".to_string().as_str());
             }
         }
         if let Some(rating) = options.rating.as_ref() {
@@ -56,14 +54,13 @@ impl BooruClient for PhilomenaClient {
         }
         let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
-        [&self.base_url(), Self::PATH_POST]
+        [(self.base_url()), Self::PATH_POST]
             .join("/")
             .replace("{page}", &page.to_string())
             .replace("{limit}", &self.options().limit.to_string())
             .replace("{tags}", &tag_string.collect::<String>())
     }
 }
-
 
 impl BooruOptionBuilder for PhilomenaClient {
     fn with_inner_options<F>(mut self, func: F) -> Self
@@ -73,6 +70,4 @@ impl BooruOptionBuilder for PhilomenaClient {
         self.options = func(self.options);
         self
     }
-
-
 }

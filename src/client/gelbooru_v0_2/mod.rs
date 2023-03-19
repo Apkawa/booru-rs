@@ -23,9 +23,7 @@ impl BooruClient for GelbooruV02Client {
         "index.php?page=dapi&s=post&q=index&json=1&pid={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        GelbooruV02Client {
-            options: options.into(),
-        }
+        GelbooruV02Client { options }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -43,7 +41,7 @@ impl BooruClient for GelbooruV02Client {
         }
         if let Some(random) = options.random.as_ref() {
             if *random {
-                tag_string.push_str(format!(" sort:random").as_str());
+                tag_string.push_str(" sort:random".to_string().as_str());
             }
         }
         if let Some(rating) = options.rating.as_ref() {
@@ -51,7 +49,7 @@ impl BooruClient for GelbooruV02Client {
         }
         let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
-        [&self.base_url(), Self::PATH_POST]
+        [(self.base_url()), Self::PATH_POST]
             .join("/")
             .replace("{page}", &page.to_string())
             .replace("{limit}", &self.options().limit.to_string())
@@ -59,11 +57,10 @@ impl BooruClient for GelbooruV02Client {
     }
 }
 
-
 impl BooruOptionBuilder for GelbooruV02Client {
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where
-            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+    where
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self

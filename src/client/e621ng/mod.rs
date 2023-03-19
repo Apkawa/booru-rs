@@ -22,16 +22,13 @@ impl BooruClient for E621ngClient {
     const PATH_POST: &'static str = "posts.json?page={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        E621ngClient {
-            options: options.into(),
-        }
+        E621ngClient { options }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
     }
 }
-
 
 impl BooruOptionBuilder for E621ngClient {
     fn with_inner_options<F>(mut self, func: F) -> Self
@@ -41,5 +38,4 @@ impl BooruOptionBuilder for E621ngClient {
         self.options = func(self.options);
         self
     }
-
 }

@@ -3,8 +3,7 @@ use std::fs::read_to_string;
 use test_helpers::fixture::get_git_root;
 
 pub fn proxy() -> Option<String> {
-    let e = env::var("HTTP_PROXY").ok();
-    e
+    env::var("HTTP_PROXY").ok()
 }
 
 pub fn load_fixture(name: &str) -> String {

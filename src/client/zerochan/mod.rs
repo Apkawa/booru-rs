@@ -23,9 +23,7 @@ impl BooruClient for ZerochanClient {
     const PATH_POST: &'static str = "{tags}?json&p={page}&l={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        ZerochanClient {
-            options: options.into(),
-        }
+        ZerochanClient { options }
     }
 
     fn get_extra_query(&'_ self) -> HashMap<String, String> {
@@ -57,15 +55,9 @@ impl BooruClient for ZerochanClient {
         let text = response.text().unwrap().replace("],\r\n  next: true", "]");
 
         let json = serde_json::from_str::<Self::PostListResponse>(&text);
-        if json.is_err() {
-            dbg!(&text);
-            json.unwrap();
-            unreachable!()
-        }
 
-        Ok(json.unwrap().into())
+        Ok(json.expect(&text).into())
     }
-
 }
 
 impl BooruOptionBuilder for ZerochanClient {
