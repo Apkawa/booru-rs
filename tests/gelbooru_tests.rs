@@ -148,6 +148,7 @@ mod gelbooru {
             serde_json::from_str(load_json_fixture("gelbooru/post_id").as_str()).unwrap();
         let model: GelbooruPost = json.into();
         assert_eq!(model.id, 8297763);
+        assert_eq!(model.created_at, "2023-03-04T09:16:56-06:00".to_string())
     }
 
     #[test]

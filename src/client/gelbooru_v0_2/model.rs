@@ -2,9 +2,11 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
-use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
+
+use crate::client::generic::BooruPostModel;
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::utils::dt::timestamp_to_rfc_3339;
 
 /// Individual post from [`GelbooruResponse`]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -24,7 +26,8 @@ pub struct GelbooruPostV0_2 {
     /// Post's rating
     pub directory: String,
     pub image: String,
-    pub change: i64,
+    #[serde(with = "timestamp_to_rfc_3339")]
+    pub change: String,
     pub owner: String,
     pub parent_id: i64,
     pub rating: String,
@@ -62,8 +65,7 @@ impl BooruPostModel for GelbooruPostV0_2 {
     }
 
     fn created(&self) -> Option<Cow<str>> {
-        // TODO
-        None
+        Some(self.change.as_str().into())
     }
 }
 

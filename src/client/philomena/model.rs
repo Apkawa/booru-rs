@@ -84,6 +84,10 @@ impl BooruPostModel for PhilomenaPost {
         // TODO use Cow
         self.tags.to_owned()
     }
+
+    fn created(&self) -> Option<Cow<str>> {
+        Some(self.created_at.as_str().into())
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

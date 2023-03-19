@@ -2,9 +2,13 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
-use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
+
+use crate::client::generic::BooruPostModel;
+use crate::client::generic::model::{Image, ImageHash, Images};
+
+use super::format::gelbooru_format_to_rfc_3339;
+
 
 /// Individual post from [`GelbooruResponse`]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -12,6 +16,7 @@ pub struct GelbooruPost {
     /// The ID of the post
     pub id: u32,
     /// Datestamp of the post's creating date
+    #[serde(with = "gelbooru_format_to_rfc_3339")]
     pub created_at: String,
     /// Post's score
     pub score: u32,
@@ -92,8 +97,7 @@ impl BooruPostModel for GelbooruPost {
     }
 
     fn created(&self) -> Option<Cow<str>> {
-        // TODO
-        None
+        Some(self.created_at.as_str().into())
     }
 }
 
@@ -159,3 +163,4 @@ impl fmt::Display for GelbooruSort {
         write!(f, "{lovercase_tag}")
     }
 }
+

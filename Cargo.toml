@@ -32,9 +32,10 @@ reqwest = { version = "0.11.12", features = ["json", "blocking"] }
 serde = { version = "1.0.147", features = ["derive"] }
 serde_json = "1.0.94"
 form_urlencoded = "1.1.0"
+time = { version = "0.3.20", features = ["std", "macros", "serde-human-readable"] }
 
 [dev-dependencies]
 # For mocking server
-mockito = {version = "1.0.0"}
+mockito = { version = "1.0.0" }
 #test-helpers = { git = "https://github.com/Apkawa/rust-test-helpers.git" }
 test-helpers = { path = "../test_helpers" }
