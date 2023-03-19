@@ -10,8 +10,10 @@ readme = "README.md"
 
 [features]
 default = [
-    "gelbooru",
     "danbooru",
+    "danbooru_v1",
+    "gelbooru",
+    "gelbooru_v02",
     "moebooru",
     "philomena",
     "zerochan",
@@ -20,7 +22,9 @@ default = [
 # TODO
 # async = []
 gelbooru = []
+gelbooru_v02 = []
 danbooru = []
+danbooru_v1 = []
 moebooru = []
 philomena = []
 zerochan = []

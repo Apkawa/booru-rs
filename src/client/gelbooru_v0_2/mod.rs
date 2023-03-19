@@ -1,7 +1,5 @@
 use self::model::{GelbooruPostV0_2, GelbooruRating, GelbooruSort};
-use crate::client::generic::{
-    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
-};
+use crate::client::generic::{BooruClient, BooruClientOptions, BooruOptionBuilder};
 
 #[cfg(feature = "gelbooru")]
 pub mod model;
@@ -11,68 +9,61 @@ pub struct GelbooruClientV0_2 {
     options: BooruClientOptions,
 }
 
-impl BooruClient<'_> for GelbooruClientV0_2 {
-    type Builder = GelbooruClientBuilderV0_2;
+impl BooruClient for GelbooruClientV0_2 {
     type PostModel = GelbooruPostV0_2;
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
+
+    type Rating = GelbooruRating;
+    type Order = GelbooruSort;
+
+    const BASE_URL: &'static str = "https://safebooru.org";
     const PATH_POST_BY_ID: &'static str = "index.php?page=dapi&s=post&q=index&json=1&id={id}";
     const PATH_POST: &'static str =
         "index.php?page=dapi&s=post&q=index&json=1&pid={page}&tags={tags}&limit={limit}";
 
-    fn new(builder: Self::Builder) -> Self {
+    fn with_options(options: BooruClientOptions) -> Self {
         GelbooruClientV0_2 {
-            options: builder.options.into(),
+            options: options.into(),
         }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
     }
+
+    fn url_posts(&self) -> String {
+        let options = self.options();
+        let page = options.page;
+        let mut tag_string = options.tags.join(" ");
+
+        // https://gelbooru.com/index.php?page=help&topic=cheatsheet
+        if let Some(order) = options.order.as_ref() {
+            tag_string.push_str(format!(" sort:{order}").as_str());
+        }
+        if let Some(random) = options.random.as_ref() {
+            if *random {
+                tag_string.push_str(format!(" sort:random").as_str());
+            }
+        }
+        if let Some(rating) = options.rating.as_ref() {
+            tag_string.push_str(format!(" rating:{rating}").as_str());
+        }
+        let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
+
+        [&self.base_url(), Self::PATH_POST]
+            .join("/")
+            .replace("{page}", &page.to_string())
+            .replace("{limit}", &self.options().limit.to_string())
+            .replace("{tags}", &tag_string.collect::<String>())
+    }
 }
 
-#[derive(Default)]
-pub struct GelbooruClientBuilderV0_2 {
-    options: BooruClientBuilderOptions,
-}
 
-impl BooruClientBuilder for GelbooruClientBuilderV0_2 {
-    type Client = GelbooruClientV0_2;
-    type Rating = GelbooruRating;
-    type Order = GelbooruSort;
-
-    const BASE_URL: &'static str = "https://safebooru.org";
-
-    fn new() -> Self {
-        GelbooruClientBuilderV0_2 {
-            options: BooruClientBuilderOptions::with_url(Self::BASE_URL),
-        }
-    }
-
-    fn build(self) -> Self::Client
-    where
-        Self: Sized,
-    {
-        Self::Client::new(self)
-    }
-    fn random(self, random: bool) -> Self {
-        if random {
-            self.tag("sort:random".to_string())
-        } else {
-            self
-        }
-    }
-    // https://gelbooru.com/index.php?page=help&topic=cheatsheet
-    fn order(self, order: Self::Order) -> Self
-    where
-        Self: Sized,
-    {
-        self.tag(format!("sort:{}", order))
-    }
-
+impl BooruOptionBuilder for GelbooruClientV0_2 {
     fn with_inner_options<F>(mut self, func: F) -> Self
-    where
-        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+        where
+            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self

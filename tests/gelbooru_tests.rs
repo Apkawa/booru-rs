@@ -6,16 +6,15 @@ mod gelbooru {
         model::{GelbooruRating, GelbooruSort},
         GelbooruClient,
     };
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
 
     use crate::helpers::{load_json_fixture, proxy};
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
-            .build()
             .get()
             .unwrap();
 
@@ -24,11 +23,10 @@ mod gelbooru {
 
     #[test]
     fn get_posts_with_rating() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
-            .build()
             .get()
             .unwrap();
 
@@ -37,11 +35,10 @@ mod gelbooru {
 
     #[test]
     fn get_posts_with_sort() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
             .order(GelbooruSort::Score)
-            .build()
             .get()
             .unwrap();
 
@@ -50,11 +47,10 @@ mod gelbooru {
 
     #[test]
     fn get_posts_with_blacklist_tag() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
             .blacklist_tag(GelbooruRating::Explicit)
-            .build()
             .get()
             .unwrap();
 
@@ -63,12 +59,11 @@ mod gelbooru {
 
     #[test]
     fn get_posts_with_limit() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
             .rating(GelbooruRating::General)
             .limit(3)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -77,12 +72,11 @@ mod gelbooru {
 
     #[test]
     fn get_posts_multiple_tags() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("1girl")
             .tag("cow_girl")
             .limit(3)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -91,11 +85,10 @@ mod gelbooru {
 
     #[test]
     fn get_random_posts() {
-        let posts = GelbooruClient::builder()
+        let posts = GelbooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
             .random(true)
-            .build()
             .get();
 
         assert!(posts.is_ok());
@@ -104,9 +97,8 @@ mod gelbooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = GelbooruClient::builder()
+        let post = GelbooruClient::new()
             .proxy(proxy())
-            .build()
             .get_by_id(7898595);
 
         assert_eq!("e40b797a0e26755b2c0dd7a34d8c95ce", post.unwrap().md5);

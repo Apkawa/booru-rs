@@ -2,16 +2,15 @@
 #[cfg(test)]
 mod philomena {
     use crate::helpers::load_json_fixture;
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
     use booru_rs::client::philomena::{
         PhilomenaClient, PhilomenaDetailResponse, PhilomenaListResponse, PhilomenaPost,
     };
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = PhilomenaClient::builder()
+        let posts = PhilomenaClient::new()
             .tag("safe")
-            .build()
             .get()
             .unwrap();
 
@@ -20,7 +19,7 @@ mod philomena {
 
     #[test]
     fn get_post_by_id() {
-        let post = PhilomenaClient::builder().build().get_by_id(1);
+        let post = PhilomenaClient::new().get_by_id(1);
 
         assert_eq!(post.unwrap().id, 1);
     }

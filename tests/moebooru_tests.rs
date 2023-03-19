@@ -1,7 +1,7 @@
 #[cfg(feature = "moebooru")]
 #[cfg(test)]
 mod moebooru {
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
     use booru_rs::client::moebooru::model::MoebooruPost;
     use booru_rs::client::moebooru::MoebooruClient;
 
@@ -9,10 +9,9 @@ mod moebooru {
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = MoebooruClient::builder()
+        let posts = MoebooruClient::new()
             .proxy(proxy())
             .tag("kafuu_chino")
-            .build()
             .get()
             .unwrap();
 
@@ -21,9 +20,8 @@ mod moebooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = MoebooruClient::builder()
+        let post = MoebooruClient::new()
             .proxy(proxy())
-            .build()
             .get_by_id(354317);
 
         assert_eq!("3f2eee84abba3e65072d74bc945467b9", post.unwrap().md5);

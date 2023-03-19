@@ -1,6 +1,4 @@
-use crate::client::generic::{
-    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
-};
+use crate::client::generic::{BooruClient, BooruClientOptions, BooruOptionBuilder};
 
 use self::model::{MoebooruPost, MoebooruRating, MoebooruSort};
 
@@ -11,17 +9,19 @@ pub struct MoebooruClient {
     options: BooruClientOptions,
 }
 
-impl BooruClient<'_> for MoebooruClient {
-    type Builder = MoebooruClientBuilder;
+impl BooruClient for MoebooruClient {
     type PostModel = MoebooruPost;
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
+    type Rating = MoebooruRating;
+    type Order = MoebooruSort;
+    const BASE_URL: &'static str = "https://konachan.com";
     const PATH_POST_BY_ID: &'static str = "post.json?tags=id:{id}";
     const PATH_POST: &'static str = "post.json?page={page}&tags={tags}&limit={limit}";
 
-    fn new(builder: Self::Builder) -> Self {
+    fn with_options(options: BooruClientOptions) -> Self {
         MoebooruClient {
-            options: builder.options.into(),
+            options: options.into(),
         }
     }
 
@@ -30,36 +30,13 @@ impl BooruClient<'_> for MoebooruClient {
     }
 }
 
-/// Builder for [`MoebooruClient`]
-#[derive(Default)]
-pub struct MoebooruClientBuilder {
-    options: BooruClientBuilderOptions,
-}
-
-impl BooruClientBuilder for MoebooruClientBuilder {
-    type Client = MoebooruClient;
-    type Rating = MoebooruRating;
-    type Order = MoebooruSort;
-    const BASE_URL: &'static str = "https://konachan.com";
+impl BooruOptionBuilder for MoebooruClient {
 
     fn with_inner_options<F>(mut self, func: F) -> Self
     where
-        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self
-    }
-
-    fn new() -> MoebooruClientBuilder {
-        MoebooruClientBuilder {
-            options: BooruClientBuilderOptions::with_url(Self::BASE_URL),
-        }
-    }
-
-    fn build(self) -> Self::Client
-    where
-        Self: Sized,
-    {
-        Self::Client::new(self)
     }
 }

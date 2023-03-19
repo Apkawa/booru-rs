@@ -1,18 +1,17 @@
-#[cfg(feature = "gelbooru")]
+#[cfg(feature = "gelbooru_v02")]
 #[cfg(test)]
 mod gelbooru_v02 {
     use booru_rs::client::gelbooru_v0_2::model::GelbooruPostV0_2;
     use booru_rs::client::gelbooru_v0_2::GelbooruClientV0_2;
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
+    use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
 
     use crate::helpers::{load_json_fixture, proxy};
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = GelbooruClientV0_2::builder()
+        let posts = GelbooruClientV0_2::new()
             .proxy(proxy())
             .tag("kafuu_chino")
-            .build()
             .get()
             .unwrap();
 
@@ -21,9 +20,8 @@ mod gelbooru_v02 {
 
     #[test]
     fn get_post_by_id() {
-        let post = GelbooruClientV0_2::builder()
+        let post = GelbooruClientV0_2::new()
             .proxy(proxy())
-            .build()
             .get_by_id(4296500);
 
         assert_eq!("c0bcc488ee06ff3e1708287b00ba1661", post.unwrap().hash);
