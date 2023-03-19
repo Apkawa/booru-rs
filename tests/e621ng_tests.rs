@@ -58,8 +58,14 @@ mod e621ng {
         );
         let images = model.images();
         assert_eq!(
-            images.original.as_ref().unwrap().url.to_string(),
-            model.file.url.unwrap()
-        )
+            images.original.as_ref().unwrap().url.to_string().as_str(),
+            model.file.url.as_ref().unwrap()
+        );
+
+        let tags = model.tags();
+        assert!(tags.len() > 0);
+        println!("{:p}, {:p} {:p}", &tags,
+                 tags[0].as_ref(),
+                 model.tags.general[0].as_str());
     }
 }

@@ -155,8 +155,10 @@ mod danbooru {
         );
         let images = model.images();
         assert_eq!(
-            images.original.as_ref().unwrap().url.to_string(),
-            model.file_url.unwrap()
-        )
+            images.original.as_ref().unwrap().url.to_string().as_str(),
+            model.file_url.as_ref().unwrap()
+        );
+        let characters = model.character();
+        assert_eq!(characters.len(), 1)
     }
 }

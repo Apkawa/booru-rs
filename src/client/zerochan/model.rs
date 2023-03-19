@@ -54,9 +54,10 @@ impl BooruPostModel for ZerochanPost {
         }
     }
 
-    fn tags(&self) -> Vec<String> {
-        // TODO use Cow
-        self.tags.to_owned()
+    fn tags(&self) -> Vec<Cow<str>> {
+        self.tags.iter()
+            .map(Into::into)
+            .collect()
     }
 }
 

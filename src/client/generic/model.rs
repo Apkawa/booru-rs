@@ -76,10 +76,9 @@ pub trait BooruPostModel {
     fn hash(&self) -> Option<ImageHash>;
     fn images(&self) -> Images;
     fn source_url(&self) -> Option<Cow<str>>;
-    // TODO move to refs
-    fn tags(&self) -> Vec<String>;
+    fn tags(&self) -> Vec<Cow<str>>;
 
-    fn character(&self) -> Vec<String> {
+    fn character(&self) -> Vec<Cow<str>> {
         Vec::new()
     }
     fn artist(&self) -> Option<Cow<str>> {
