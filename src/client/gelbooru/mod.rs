@@ -1,9 +1,9 @@
 use self::model::{GelbooruPost, GelbooruRating, GelbooruResponse, GelbooruSort};
 use crate::client::generic::{BooruClient, BooruClientOptions, BooruOptionBuilder};
 
+mod format;
 #[cfg(feature = "gelbooru")]
 pub mod model;
-mod format;
 
 /// Client that sends requests to the Gelbooru >=v0.2.5 API to retrieve the data.
 pub struct GelbooruClient {
@@ -22,9 +22,7 @@ impl BooruClient for GelbooruClient {
         "index.php?page=dapi&s=post&q=index&json=1&pid={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        GelbooruClient {
-            options: options.into(),
-        }
+        GelbooruClient { options }
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -42,7 +40,7 @@ impl BooruClient for GelbooruClient {
         }
         if let Some(random) = options.random.as_ref() {
             if *random {
-                tag_string.push_str(format!(" sort:random").as_str());
+                tag_string.push_str(" sort:random".to_string().as_str());
             }
         }
         if let Some(rating) = options.rating.as_ref() {
@@ -50,7 +48,7 @@ impl BooruClient for GelbooruClient {
         }
         let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
-        [&self.base_url(), Self::PATH_POST]
+        [(self.base_url()), Self::PATH_POST]
             .join("/")
             .replace("{page}", &page.to_string())
             .replace("{limit}", &self.options().limit.to_string())
@@ -67,4 +65,3 @@ impl BooruOptionBuilder for GelbooruClient {
         self
     }
 }
-

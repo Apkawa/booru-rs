@@ -26,16 +26,13 @@ impl BooruClient for DanbooruV1Client {
     const PATH_POST: &'static str = "post/index.json?page={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        DanbooruV1Client {
-            options: options.into(),
-        }
-            .header(
-                header::USER_AGENT,
-                HeaderValue::from_static(
-                    "Mozilla/5.0 (X11; Linux x86_64) \
+        DanbooruV1Client { options }.header(
+            header::USER_AGENT,
+            HeaderValue::from_static(
+                "Mozilla/5.0 (X11; Linux x86_64) \
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-                ),
-            )
+            ),
+        )
     }
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
@@ -45,8 +42,8 @@ impl BooruClient for DanbooruV1Client {
 
 impl BooruOptionBuilder for DanbooruV1Client {
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where
-            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+    where
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self

@@ -30,9 +30,7 @@ impl BooruPostModel for ZerochanPost {
     }
 
     fn hash(&self) -> Option<ImageHash> {
-        self.hash
-            .as_ref()
-            .map(|s| ImageHash::MD5(s.as_str().into()))
+        self.hash.as_ref().map(|s| ImageHash::MD5(s.as_str()))
     }
 
     fn images(&self) -> Images {
@@ -47,17 +45,11 @@ impl BooruPostModel for ZerochanPost {
     }
 
     fn source_url(&self) -> Option<Cow<str>> {
-        if let Some(source) = self.source.as_ref() {
-            Some(source.into())
-        } else {
-            None
-        }
+        self.source.as_ref().map(|source| source.into())
     }
 
     fn tags(&self) -> Vec<Cow<str>> {
-        self.tags.iter()
-            .map(Into::into)
-            .collect()
+        self.tags.iter().map(Into::into).collect()
     }
 }
 
@@ -94,7 +86,7 @@ impl From<ZerochanListItem> for ZerochanPost {
             tag,
             tags,
         } = value;
-        let tag_img = tag.replace(' ', ".").replace('&', ".");
+        let tag_img = tag.replace([' ', '&'], ".");
         let tag_img: String = form_urlencoded::byte_serialize(tag_img.as_bytes()).collect();
         ZerochanPost {
             id,

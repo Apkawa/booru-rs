@@ -61,7 +61,7 @@ impl BooruPostModel for E621ngPost {
     }
 
     fn hash(&self) -> Option<ImageHash> {
-        Some(ImageHash::MD5(self.file.md5.as_str().into()))
+        Some(ImageHash::MD5(self.file.md5.as_str()))
     }
 
     fn images(&self) -> Images {
@@ -86,7 +86,7 @@ impl BooruPostModel for E621ngPost {
     }
 
     fn source_url(&self) -> Option<Cow<str>> {
-        if self.sources.len() > 0 {
+        if !self.sources.is_empty() {
             Some(self.sources[0].as_str().into())
         } else {
             None
@@ -112,9 +112,7 @@ impl BooruPostModel for E621ngPost {
         }
     }
     fn character(&self) -> Vec<Cow<str>> {
-        self.tags.character.iter()
-            .map(Into::into)
-            .collect()
+        self.tags.character.iter().map(Into::into).collect()
     }
 
     fn created(&self) -> Option<Cow<str>> {

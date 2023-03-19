@@ -97,9 +97,7 @@ mod gelbooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = GelbooruClient::new()
-            .proxy(proxy())
-            .get_by_id(7898595);
+        let post = GelbooruClient::new().proxy(proxy()).get_by_id(7898595);
 
         assert_eq!("e40b797a0e26755b2c0dd7a34d8c95ce", post.unwrap().md5);
     }

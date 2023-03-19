@@ -1,10 +1,8 @@
 use std::str::FromStr;
 
-
 use crate::manager::builder::EngineBooruBuilder;
 
 pub mod builder;
-
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Engine {
@@ -45,7 +43,7 @@ impl FromStr for Engine {
             "philomena" => Philomena,
             "zerochan" => Zerochan,
             "e621ng" => E621ng,
-            _ => return Err(())
+            _ => return Err(()),
         };
         Ok(engine)
     }
@@ -80,15 +78,15 @@ impl TryFrom<&String> for Engine {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::client::generic::BooruOptionBuilder;
     use super::*;
+    use crate::client::generic::BooruOptionBuilder;
 
     #[test]
     fn test_danbooru() {
-        let post = Engine::Danbooru.builder()
+        let post = Engine::Danbooru
+            .builder()
             .default_url("https://testbooru.donmai.us")
             .get_by_id(9423)
             .unwrap();

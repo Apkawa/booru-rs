@@ -19,20 +19,29 @@ pub struct EngineBooruBuilder {
 
 impl EngineBooruBuilder {
     pub fn new(engine: Engine) -> Self {
-        EngineBooruBuilder { engine, options: Default::default() }
+        EngineBooruBuilder {
+            engine,
+            options: Default::default(),
+        }
     }
     /// Directly get a post by its unique Id
-    pub fn get_by_id<'b, I: Display>(&self, id: I) -> Result<Box<dyn BooruPostModel>, reqwest::Error> {
+    pub fn get_by_id<I: Display>(&self, id: I) -> Result<Box<dyn BooruPostModel>, reqwest::Error> {
         use Engine::*;
         let res: Box<dyn BooruPostModel> = match self.engine {
             Danbooru => Box::new(DanbooruClient::with_options(self.options.clone()).get_by_id(id)?),
-            DanbooruV1 => Box::new(DanbooruV1Client::with_options(self.options.clone()).get_by_id(id)?),
+            DanbooruV1 => {
+                Box::new(DanbooruV1Client::with_options(self.options.clone()).get_by_id(id)?)
+            }
             Gelbooru => Box::new(GelbooruClient::with_options(self.options.clone()).get_by_id(id)?),
-            GelbooruV02 => Box::new(GelbooruV02Client::with_options(self.options.clone()).get_by_id(id)?),
+            GelbooruV02 => {
+                Box::new(GelbooruV02Client::with_options(self.options.clone()).get_by_id(id)?)
+            }
             Moebooru => Box::new(MoebooruClient::with_options(self.options.clone()).get_by_id(id)?),
-            Philomena => Box::new(PhilomenaClient::with_options(self.options.clone()).get_by_id(id)?),
+            Philomena => {
+                Box::new(PhilomenaClient::with_options(self.options.clone()).get_by_id(id)?)
+            }
             Zerochan => Box::new(ZerochanClient::with_options(self.options.clone()).get_by_id(id)?),
-            E621ng => Box::new(E621ngClient::with_options(self.options.clone()).get_by_id(id)?)
+            E621ng => Box::new(E621ngClient::with_options(self.options.clone()).get_by_id(id)?),
         };
         Ok(res)
     }
@@ -90,14 +99,13 @@ impl EngineBooruBuilder {
 
 impl BooruOptionBuilder for EngineBooruBuilder {
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where
-            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+    where
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -109,7 +117,8 @@ mod tests {
             .default_url("https://testbooru.donmai.us")
             .limit(10)
             .tag("1girl")
-            .get().unwrap();
+            .get()
+            .unwrap();
 
         assert_eq!(posts.len(), 10)
     }
@@ -118,7 +127,8 @@ mod tests {
     fn test_danbooru_post() {
         let post = EngineBooruBuilder::new(Engine::Danbooru)
             .default_url("https://testbooru.donmai.us")
-            .get_by_id(9423).unwrap();
+            .get_by_id(9423)
+            .unwrap();
 
         assert_eq!(post.id().to_string(), "9423".to_string())
     }

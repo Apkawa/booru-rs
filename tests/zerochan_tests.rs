@@ -20,9 +20,7 @@ mod zerochan {
 
     #[test]
     fn get_post_by_id() {
-        let post = ZerochanClient::new()
-            .proxy(proxy())
-            .get_by_id(3914229);
+        let post = ZerochanClient::new().proxy(proxy()).get_by_id(3914229);
 
         assert_eq!(post.unwrap().id, 3914229);
     }

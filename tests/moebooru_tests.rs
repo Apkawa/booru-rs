@@ -20,9 +20,7 @@ mod moebooru {
 
     #[test]
     fn get_post_by_id() {
-        let post = MoebooruClient::new()
-            .proxy(proxy())
-            .get_by_id(354317);
+        let post = MoebooruClient::new().proxy(proxy()).get_by_id(354317);
 
         assert_eq!("3f2eee84abba3e65072d74bc945467b9", post.unwrap().md5);
     }
