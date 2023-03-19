@@ -5,11 +5,11 @@ use crate::client::generic::{BooruClient, BooruClientOptions, BooruOptionBuilder
 pub mod model;
 
 /// Client that sends requests to the Gelbooru >=v0.2.0,<v0.2.5 API to retrieve the data.
-pub struct GelbooruClientV0_2 {
+pub struct GelbooruV02Client {
     options: BooruClientOptions,
 }
 
-impl BooruClient for GelbooruClientV0_2 {
+impl BooruClient for GelbooruV02Client {
     type PostModel = GelbooruPostV0_2;
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
@@ -23,7 +23,7 @@ impl BooruClient for GelbooruClientV0_2 {
         "index.php?page=dapi&s=post&q=index&json=1&pid={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        GelbooruClientV0_2 {
+        GelbooruV02Client {
             options: options.into(),
         }
     }
@@ -60,7 +60,7 @@ impl BooruClient for GelbooruClientV0_2 {
 }
 
 
-impl BooruOptionBuilder for GelbooruClientV0_2 {
+impl BooruOptionBuilder for GelbooruV02Client {
     fn with_inner_options<F>(mut self, func: F) -> Self
         where
             F: FnOnce(BooruClientOptions) -> BooruClientOptions,

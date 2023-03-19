@@ -1,12 +1,10 @@
 use std::fmt::Display;
 
-use reqwest::Proxy;
-
 use crate::client::danbooru::DanbooruClient;
-use crate::client::danbooru_v1::DanbooruClientV1;
+use crate::client::danbooru_v1::DanbooruV1Client;
 use crate::client::e621ng::E621ngClient;
 use crate::client::gelbooru::GelbooruClient;
-use crate::client::gelbooru_v0_2::GelbooruClientV0_2;
+use crate::client::gelbooru_v0_2::GelbooruV02Client;
 use crate::client::generic::{BooruClient, BooruClientOptions, BooruOptionBuilder, BooruPostModel};
 use crate::client::moebooru::MoebooruClient;
 use crate::client::philomena::PhilomenaClient;
@@ -28,9 +26,9 @@ impl EngineBooruBuilder {
         use Engine::*;
         let res: Box<dyn BooruPostModel> = match self.engine {
             Danbooru => Box::new(DanbooruClient::with_options(self.options.clone()).get_by_id(id)?),
-            DanbooruV1 => Box::new(DanbooruClientV1::with_options(self.options.clone()).get_by_id(id)?),
+            DanbooruV1 => Box::new(DanbooruV1Client::with_options(self.options.clone()).get_by_id(id)?),
             Gelbooru => Box::new(GelbooruClient::with_options(self.options.clone()).get_by_id(id)?),
-            GelbooruV02 => Box::new(GelbooruClientV0_2::with_options(self.options.clone()).get_by_id(id)?),
+            GelbooruV02 => Box::new(GelbooruV02Client::with_options(self.options.clone()).get_by_id(id)?),
             Moebooru => Box::new(MoebooruClient::with_options(self.options.clone()).get_by_id(id)?),
             Philomena => Box::new(PhilomenaClient::with_options(self.options.clone()).get_by_id(id)?),
             Zerochan => Box::new(ZerochanClient::with_options(self.options.clone()).get_by_id(id)?),
@@ -49,7 +47,7 @@ impl EngineBooruBuilder {
                 .into_iter()
                 .map(|s| Box::new(s) as Box<dyn BooruPostModel>)
                 .collect(),
-            DanbooruV1 => DanbooruClientV1::with_options(self.options.clone())
+            DanbooruV1 => DanbooruV1Client::with_options(self.options.clone())
                 .get()?
                 .into_iter()
                 .map(|s| Box::new(s) as Box<dyn BooruPostModel>)
@@ -59,7 +57,7 @@ impl EngineBooruBuilder {
                 .into_iter()
                 .map(|s| Box::new(s) as Box<dyn BooruPostModel>)
                 .collect(),
-            GelbooruV02 => GelbooruClientV0_2::with_options(self.options.clone())
+            GelbooruV02 => GelbooruV02Client::with_options(self.options.clone())
                 .get()?
                 .into_iter()
                 .map(|s| Box::new(s) as Box<dyn BooruPostModel>)
