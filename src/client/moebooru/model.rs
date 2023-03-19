@@ -1,8 +1,10 @@
 //! Models for Danbooru
 use core::fmt;
+use std::borrow::Cow;
 
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MoebooruPost {
@@ -20,8 +22,8 @@ pub struct MoebooruPost {
     pub file_url: String,
     pub is_shown_in_index: bool,
     pub preview_url: String,
-    pub preview_width: usize,
-    pub preview_height: usize,
+    pub preview_width: u32,
+    pub preview_height: u32,
     pub actual_preview_width: usize,
     pub actual_preview_height: usize,
     pub sample_url: String,
@@ -39,6 +41,45 @@ pub struct MoebooruPost {
     pub width: u32,
     pub height: u32,
     pub is_held: bool,
+}
+
+impl BooruPostModel for MoebooruPost {
+    fn id(&self) -> Cow<str> {
+        self.id.to_string().into()
+    }
+
+    fn hash(&self) -> Option<ImageHash> {
+        Some(ImageHash::MD5(self.md5.as_str().into()))
+    }
+
+    fn images(&self) -> Images {
+        Images {
+            original: Image::new(self.file_url.as_str())
+                .size(self.width, self.height)
+                .filesize(self.file_size)
+                .into(),
+            sample: Image::new(self.sample_url.as_str())
+                .size(self.sample_width, self.sample_height)
+                .filesize(self.sample_file_size)
+                .into(),
+            preview: Image::new(self.preview_url.as_str())
+                .size(self.preview_width, self.preview_height)
+                .into(),
+        }
+    }
+
+    fn source_url(&self) -> Option<Cow<str>> {
+        if self.source.len() > 0 {
+            Some(self.source.as_str().into())
+        } else {
+            None
+        }
+    }
+
+    fn tags(&self) -> Vec<String> {
+        // TODO use Cow
+        self.tags.split(" ").map(ToOwned::to_owned).collect()
+    }
 }
 
 impl From<Vec<MoebooruPost>> for MoebooruPost {

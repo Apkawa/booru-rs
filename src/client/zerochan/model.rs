@@ -1,9 +1,11 @@
 //! Models for Zerochan
 /// https://www.zerochan.net/api
 use core::fmt;
+use std::borrow::Cow;
 
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ZerochanPost {
@@ -22,7 +24,41 @@ pub struct ZerochanPost {
     pub tags: Vec<String>,
 }
 
+impl BooruPostModel for ZerochanPost {
+    fn id(&self) -> Cow<str> {
+        self.id.to_string().into()
+    }
 
+    fn hash(&self) -> Option<ImageHash> {
+        self.hash
+            .as_ref()
+            .map(|s| ImageHash::MD5(s.as_str().into()))
+    }
+
+    fn images(&self) -> Images {
+        Images {
+            original: Image::new(self.full.as_str())
+                .size(self.width, self.height)
+                .filesize(self.size)
+                .into(),
+            sample: Image::new(self.large.as_str()).into(),
+            preview: Image::new(self.medium.as_str()).into(),
+        }
+    }
+
+    fn source_url(&self) -> Option<Cow<str>> {
+        if let Some(source) = self.source.as_ref() {
+            Some(source.into())
+        } else {
+            None
+        }
+    }
+
+    fn tags(&self) -> Vec<String> {
+        // TODO use Cow
+        self.tags.to_owned()
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ZerochanListResponse {
@@ -50,10 +86,12 @@ impl From<ZerochanListItem> for ZerochanPost {
     fn from(value: ZerochanListItem) -> Self {
         let ZerochanListItem {
             id,
-            width, height,
+            width,
+            height,
             thumbnail,
             source,
-            tag, tags
+            tag,
+            tags,
         } = value;
         let tag_img = tag.replace(' ', ".").replace('&', ".");
         let tag_img: String = form_urlencoded::byte_serialize(tag_img.as_bytes()).collect();
@@ -73,7 +111,6 @@ impl From<ZerochanListItem> for ZerochanPost {
         }
     }
 }
-
 
 /// Post's rating.
 // TODO find tag

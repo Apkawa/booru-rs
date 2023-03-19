@@ -1,12 +1,15 @@
-pub mod model;
-
 use std::collections::HashMap;
 use std::fmt::Display;
+
 use reqwest;
-use reqwest::{IntoUrl, Proxy};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
+use reqwest::{IntoUrl, Proxy};
 use serde::de::DeserializeOwned;
+
 use crate::utils::general::get_default_headers;
+
+pub mod model;
+pub use model::BooruPostModel;
 
 #[derive(Default)]
 pub struct BooruClientOptions {
@@ -19,7 +22,7 @@ pub struct BooruClientOptions {
 
 pub trait BooruClient<'a> {
     type Builder: BooruClientBuilder + Default + Sized;
-    type PostModel: DeserializeOwned;
+    type PostModel: DeserializeOwned + BooruPostModel;
     type PostResponse: DeserializeOwned + Into<Self::PostModel>;
     type PostListResponse: DeserializeOwned + Into<Vec<Self::PostModel>>;
 
@@ -38,8 +41,8 @@ pub trait BooruClient<'a> {
         &self.options().client
     }
 
-    fn url_post_by_id(&'a self, id: u32) -> String {
-        let path = Self::PATH_POST_BY_ID.replace("{id}", id.to_string().as_str());
+    fn url_post_by_id(&'a self, id: &str) -> String {
+        let path = Self::PATH_POST_BY_ID.replace("{id}", id);
         [&self.options().url, path.as_str()].join("/")
     }
 
@@ -48,18 +51,18 @@ pub trait BooruClient<'a> {
         let tag_string = self.options().tags.join(" ");
         let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
-        [&self.options().url, Self::PATH_POST].join("/")
+        [&self.options().url, Self::PATH_POST]
+            .join("/")
             .replace("{page}", &page.to_string())
             .replace("{limit}", &self.options().limit.to_string())
             .replace("{tags}", &tag_string.collect::<String>())
     }
 
     /// Directly get a post by its unique Id
-    fn get_by_id(&'a self, id: u32) -> Result<Self::PostModel, reqwest::Error>
-    {
+    fn get_by_id<'b, I: Display>(&'a self, id: I) -> Result<Self::PostModel, reqwest::Error> {
         let request = self
             .client()
-            .get(self.url_post_by_id(id))
+            .get(self.url_post_by_id(&id.to_string()))
             .headers(self.options().headers.to_owned());
         dbg!(&request);
         let response = request.send()?;
@@ -78,7 +81,10 @@ pub trait BooruClient<'a> {
         HashMap::new()
     }
 
-    fn get_with_page(&'a self, page: Option<usize>) -> Result<Vec<Self::PostModel>, reqwest::Error> {
+    fn get_with_page(
+        &'a self,
+        page: Option<usize>,
+    ) -> Result<Vec<Self::PostModel>, reqwest::Error> {
         let url = self.url_posts(page);
         let extra_query = self.get_extra_query();
         let extra_query: Vec<_> = extra_query.iter().collect();
@@ -149,9 +155,7 @@ impl From<BooruClientBuilderOptions> for BooruClientOptions {
             client_builder = client_builder.no_proxy();
         }
         BooruClientOptions {
-            client: client_builder
-                .build()
-                .unwrap(),
+            client: client_builder.build().unwrap(),
             headers: value.headers.to_owned(),
             url: value.url.to_owned(),
             tags: value.tags.to_owned(),
@@ -159,7 +163,6 @@ impl From<BooruClientBuilderOptions> for BooruClientOptions {
         }
     }
 }
-
 
 #[must_use]
 pub trait BooruClientBuilder {
@@ -171,18 +174,20 @@ pub trait BooruClientBuilder {
     const MAX_TAGS_LENGTH: usize = 2;
 
     fn new() -> Self
-        where Self: Sized + Default
+    where
+        Self: Sized + Default,
     {
         Self::default()
     }
     fn build(self) -> Self::Client;
 
     fn with_inner_options<F>(self, func: F) -> Self
-        where F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions;
+    where
+        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions;
 
     fn proxy<I: IntoUrl>(self, proxy: Option<I>) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.proxy = if let Some(proxy) = proxy {
@@ -195,8 +200,8 @@ pub trait BooruClientBuilder {
     }
 
     fn header<K: Into<HeaderName>, V: Into<HeaderValue>>(self, key: K, value: V) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.headers.insert(key.into(), value.into());
@@ -205,8 +210,8 @@ pub trait BooruClientBuilder {
     }
     /// Change the default url for the client
     fn default_url(self, url: &str) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.url = url.to_string();
@@ -214,10 +219,10 @@ pub trait BooruClientBuilder {
         })
     }
 
-
     /// Set how many posts you want to retrieve (100 is the default and maximum)
     fn limit(self, limit: u32) -> Self
-        where Self: Sized
+    where
+        Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.limit = limit;
@@ -227,8 +232,8 @@ pub trait BooruClientBuilder {
 
     /// Add a tag to the query
     fn tag<S: Into<String>>(self, tag: S) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             if options.tags.len() > Self::MAX_TAGS_LENGTH {
@@ -239,19 +244,18 @@ pub trait BooruClientBuilder {
         })
     }
 
-
     /// Add a [`Self::Rating`] to the query
     fn rating(self, rating: Self::Rating) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.tag(format!("rating:{}", rating))
     }
 
     /// Retrieves the posts in a random order
     fn random(self, random: bool) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         if random {
             self.tag("order:random".to_string())
@@ -262,16 +266,16 @@ pub trait BooruClientBuilder {
 
     /// Add a [`Self::Order`] to the query
     fn order(self, order: Self::Order) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.tag(format!("order:{}", order))
     }
 
     /// Blacklist a tag from the query
     fn blacklist_tag<S: Into<String>>(self, tag: S) -> Self
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         self.tag(format!("-{}", tag.into()))
     }

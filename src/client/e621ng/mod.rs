@@ -1,6 +1,8 @@
 use crate::client::e621ng::model::{E621ngDetailResponse, E621ngListResponse};
 /// https://e621.net/help/api
-use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
+use crate::client::generic::{
+    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
+};
 
 pub use self::model::{E621ngPost, E621ngRating, E621ngSort};
 
@@ -20,9 +22,10 @@ impl BooruClient<'_> for E621ngClient {
     const PATH_POST: &'static str = "posts.json?page={page}&tags={tags}&limit={limit}";
 
     fn new(builder: Self::Builder) -> Self {
-        E621ngClient { options: builder.options.into() }
+        E621ngClient {
+            options: builder.options.into(),
+        }
     }
-
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
@@ -42,7 +45,9 @@ impl BooruClientBuilder for E621ngClientBuilder {
     const BASE_URL: &'static str = "https://e621.net";
 
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions {
+    where
+        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+    {
         self.options = func(self.options);
         self
     }
@@ -54,7 +59,9 @@ impl BooruClientBuilder for E621ngClientBuilder {
     }
 
     fn build(self) -> Self::Client
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         Self::Client::new(self)
     }
 }

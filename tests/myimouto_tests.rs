@@ -1,7 +1,7 @@
 #[cfg(feature = "moebooru")]
 #[cfg(test)]
 mod myimouto {
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
     use booru_rs::client::moebooru::model::MoebooruPost;
     use booru_rs::client::moebooru::MoebooruClient;
 
@@ -33,14 +33,30 @@ mod myimouto {
 
     #[test]
     fn posts_deserialize_json() {
-        let json: Vec<MoebooruPost> = serde_json::from_str(load_json_fixture("myimouto/posts").as_str()).unwrap();
+        let json: Vec<MoebooruPost> =
+            serde_json::from_str(load_json_fixture("myimouto/posts").as_str()).unwrap();
         assert_eq!(json.len(), 10);
     }
 
     #[test]
     fn post_deserialize_json() {
-        let json: Vec<MoebooruPost> = serde_json::from_str(load_json_fixture("myimouto/post_id").as_str()).unwrap();
+        let json: Vec<MoebooruPost> =
+            serde_json::from_str(load_json_fixture("myimouto/post_id").as_str()).unwrap();
         let model: MoebooruPost = json.into();
         assert_eq!(model.id, 543968);
+    }
+
+    #[test]
+    fn post_booru_model_trait() {
+        let json: Vec<MoebooruPost> =
+            serde_json::from_str(load_json_fixture("myimouto/post_id").as_str()).unwrap();
+        let model: MoebooruPost = json.into();
+        assert_eq!(model.id().to_string(), model.id.to_string());
+        assert_eq!(model.hash().as_ref().unwrap().to_string(), model.md5);
+        let images = model.images();
+        assert_eq!(
+            images.original.as_ref().unwrap().url.to_string(),
+            model.file_url
+        )
     }
 }

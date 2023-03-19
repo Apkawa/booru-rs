@@ -1,4 +1,6 @@
-use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
+use crate::client::generic::{
+    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
+};
 
 pub use self::model::{DanbooruPost, DanbooruRating, DanbooruSort};
 
@@ -18,9 +20,10 @@ impl BooruClient<'_> for DanbooruClient {
     const PATH_POST: &'static str = "posts.json?page={page}&tags={tags}&limit={limit}";
 
     fn new(builder: Self::Builder) -> Self {
-        DanbooruClient { options: builder.options.into() }
+        DanbooruClient {
+            options: builder.options.into(),
+        }
     }
-
 
     fn options(&'_ self) -> &'_ BooruClientOptions {
         &self.options
@@ -40,7 +43,9 @@ impl BooruClientBuilder for DanbooruClientBuilder {
     const BASE_URL: &'static str = "https://danbooru.donmai.us";
 
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions {
+    where
+        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+    {
         self.options = func(self.options);
         self
     }
@@ -52,7 +57,9 @@ impl BooruClientBuilder for DanbooruClientBuilder {
     }
 
     fn build(self) -> Self::Client
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         Self::Client::new(self)
     }
 }

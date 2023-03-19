@@ -1,6 +1,9 @@
 //! Models for Gelbooru
 use core::fmt;
+use std::borrow::Cow;
 
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
 /// Individual post from [`GelbooruResponse`]
@@ -52,7 +55,47 @@ pub struct GelbooruPost {
     pub has_children: String,
 }
 
+impl BooruPostModel for GelbooruPost {
+    fn id(&self) -> Cow<str> {
+        self.id.to_string().into()
+    }
 
+    fn hash(&self) -> Option<ImageHash> {
+        Some(ImageHash::MD5(self.md5.as_str().into()))
+    }
+
+    fn images(&self) -> Images {
+        Images {
+            original: Image::new(self.file_url.as_str())
+                .size(self.width, self.height)
+                .into(),
+            sample: Image::new(self.sample_url.as_str())
+                .size(self.sample_width, self.sample_height)
+                .into(),
+            preview: Image::new(self.preview_url.as_str())
+                .size(self.preview_width, self.preview_height)
+                .into(),
+        }
+    }
+
+    fn source_url(&self) -> Option<Cow<str>> {
+        if self.source.len() > 0 {
+            Some(self.source.as_str().into())
+        } else {
+            None
+        }
+    }
+
+    fn tags(&self) -> Vec<String> {
+        // TODO use Cow
+        self.tags.split(" ").map(ToOwned::to_owned).collect()
+    }
+
+    fn created(&self) -> Option<Cow<str>> {
+        // TODO
+        None
+    }
+}
 
 /// Gelbooru's API response with a list a posts
 #[derive(Serialize, Deserialize, Debug)]

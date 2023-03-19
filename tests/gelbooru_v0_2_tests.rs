@@ -1,9 +1,9 @@
 #[cfg(feature = "gelbooru")]
 #[cfg(test)]
 mod gelbooru_v02 {
-    use booru_rs::client::gelbooru_v0_2::GelbooruClientV0_2;
     use booru_rs::client::gelbooru_v0_2::model::GelbooruPostV0_2;
-    use booru_rs::client::generic::{BooruClient, BooruClientBuilder};
+    use booru_rs::client::gelbooru_v0_2::GelbooruClientV0_2;
+    use booru_rs::client::generic::{BooruClient, BooruClientBuilder, BooruPostModel};
 
     use crate::helpers::{load_json_fixture, proxy};
 
@@ -31,16 +31,33 @@ mod gelbooru_v02 {
 
     #[test]
     fn posts_deserialize_json() {
-        let json: Vec<GelbooruPostV0_2> = serde_json::from_str(load_json_fixture("gelbooru_v0.2/posts").as_str()).unwrap();
+        let json: Vec<GelbooruPostV0_2> =
+            serde_json::from_str(load_json_fixture("gelbooru_v0.2/posts").as_str()).unwrap();
         assert_eq!(json.len(), 2);
     }
 
     #[test]
     fn post_deserialize_json() {
-        let json: Vec<GelbooruPostV0_2> = serde_json::from_str(load_json_fixture("gelbooru_v0.2/post_id").as_str()).unwrap();
+        let json: Vec<GelbooruPostV0_2> =
+            serde_json::from_str(load_json_fixture("gelbooru_v0.2/post_id").as_str()).unwrap();
         let model: GelbooruPostV0_2 = json.into();
         assert_eq!(model.id, 4296456);
     }
+
+    #[test]
+    fn post_booru_model_trait() {
+        let json: Vec<GelbooruPostV0_2> =
+            serde_json::from_str(load_json_fixture("gelbooru_v0.2/post_id").as_str()).unwrap();
+        let model: GelbooruPostV0_2 = json.into();
+        assert_eq!(model.id().to_string(), model.id.to_string());
+        assert_eq!(
+            model.hash().as_ref().unwrap().to_string().as_str(),
+            model.hash.as_str()
+        );
+        let images = model.images();
+        assert_eq!(
+            images.original.as_ref().unwrap().url.to_string(),
+            model.image
+        )
+    }
 }
-
-
