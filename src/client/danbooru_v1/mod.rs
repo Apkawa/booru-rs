@@ -11,11 +11,11 @@ pub use self::model::{DanbooruPostV1, DanbooruRatingV1, DanbooruSortV1};
 pub mod model;
 
 /// Client that sends requests to the Danbooru API to retrieve the data.
-pub struct DanbooruClientV1 {
+pub struct DanbooruV1Client {
     options: BooruClientOptions,
 }
 
-impl BooruClient for DanbooruClientV1 {
+impl BooruClient for DanbooruV1Client {
     type PostModel = DanbooruPostV1;
     type PostResponse = Vec<Self::PostModel>;
     type PostListResponse = Vec<Self::PostModel>;
@@ -26,7 +26,7 @@ impl BooruClient for DanbooruClientV1 {
     const PATH_POST: &'static str = "post/index.json?page={page}&tags={tags}&limit={limit}";
 
     fn with_options(options: BooruClientOptions) -> Self {
-        DanbooruClientV1 {
+        DanbooruV1Client {
             options: options.into(),
         }
             .header(
@@ -43,7 +43,7 @@ impl BooruClient for DanbooruClientV1 {
     }
 }
 
-impl BooruOptionBuilder for DanbooruClientV1 {
+impl BooruOptionBuilder for DanbooruV1Client {
     fn with_inner_options<F>(mut self, func: F) -> Self
         where
             F: FnOnce(BooruClientOptions) -> BooruClientOptions,

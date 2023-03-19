@@ -2,14 +2,14 @@
 #[cfg(test)]
 mod danbooru_v1 {
 
-    use booru_rs::client::danbooru_v1::{DanbooruClientV1, DanbooruPostV1};
+    use booru_rs::client::danbooru_v1::{DanbooruV1Client, DanbooruPostV1};
     use booru_rs::client::generic::{BooruClient, BooruOptionBuilder, BooruPostModel};
 
     use crate::helpers::load_json_fixture;
 
     #[test]
     fn get_posts_with_tag() {
-        let posts = DanbooruClientV1::new()
+        let posts = DanbooruV1Client::new()
             .tag("elbow_gloves")
             .get()
             .unwrap();
@@ -19,7 +19,7 @@ mod danbooru_v1 {
 
     #[test]
     fn get_post_by_id() {
-        let post = DanbooruClientV1::new().get_by_id(650866);
+        let post = DanbooruV1Client::new().get_by_id(650866);
 
         assert_eq!("5988fc36df3c784771419dd8a068b3a0", post.unwrap().md5);
     }
