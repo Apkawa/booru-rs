@@ -1,11 +1,14 @@
 //! Models for Danbooru
 use core::fmt;
+use std::borrow::Cow;
 
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct E621ngListResponse {
-    posts: Vec<E621ngPost>
+    posts: Vec<E621ngPost>,
 }
 
 impl From<E621ngListResponse> for Vec<E621ngPost> {
@@ -16,7 +19,7 @@ impl From<E621ngListResponse> for Vec<E621ngPost> {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct E621ngDetailResponse {
-    post: E621ngPost
+    post: E621ngPost,
 }
 
 impl From<E621ngDetailResponse> for E621ngPost {
@@ -52,6 +55,67 @@ pub struct E621ngPost {
     // pub duration: Option<_>,
 }
 
+impl BooruPostModel for E621ngPost {
+    fn id(&self) -> Cow<str> {
+        self.id.to_string().into()
+    }
+
+    fn hash(&self) -> Option<ImageHash> {
+        Some(ImageHash::MD5(self.file.md5.as_str().into()))
+    }
+
+    fn images(&self) -> Images {
+        Images {
+            original: self.file.url.as_ref().map(|u| {
+                Image::new(u)
+                    .size(self.file.width, self.file.height)
+                    .filesize(self.file.size)
+                    .ext(self.file.ext.as_str())
+            }),
+            sample: self
+                .sample
+                .url
+                .as_ref()
+                .map(|u| Image::new(u).size(self.sample.width, self.sample.height)),
+            preview: self
+                .preview
+                .url
+                .as_ref()
+                .map(|u| Image::new(u).size(self.preview.width, self.preview.height)),
+        }
+    }
+
+    fn source_url(&self) -> Option<Cow<str>> {
+        if self.sources.len() > 0 {
+            Some(self.sources[0].as_str().into())
+        } else {
+            None
+        }
+    }
+
+    fn tags(&self) -> Vec<String> {
+        // TODO use Cow
+        [].iter()
+            .chain(self.tags.artist.iter())
+            .chain(self.tags.character.iter())
+            .chain(self.tags.general.iter())
+            .chain(self.tags.species.iter())
+            .chain(self.tags.meta.iter())
+            .map(ToOwned::to_owned)
+            .collect()
+    }
+
+    fn artist(&self) -> Option<Cow<str>> {
+        if self.tags.artist.is_empty() {
+            None
+        } else {
+            Some(self.tags.artist[0].as_str().into())
+        }
+    }
+    fn character(&self) -> Vec<String> {
+        self.tags.character.to_owned()
+    }
+}
 
 // #[derive(Serialize, Deserialize)]
 // struct Relationships {
@@ -120,9 +184,6 @@ pub struct File {
     pub url: Option<String>,
 }
 
-
-
-
 /// Post's rating. Check the [Ratings wiki](https://e621.net/help/ratings)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
@@ -147,6 +208,7 @@ impl fmt::Display for E621ngRating {
         write!(f, "{lowercase_tag}")
     }
 }
+
 // TODO fill from https://e621.net/wiki_pages/9169
 #[derive(Debug, Clone)]
 pub enum E621ngSort {

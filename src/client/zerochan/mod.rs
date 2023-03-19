@@ -1,7 +1,9 @@
+use crate::client::generic::{
+    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
+};
+use reqwest::Error;
 /// https://www.zerochan.net/api
 use std::collections::HashMap;
-use reqwest::Error;
-use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
 pub use self::model::{ZerochanListResponse, ZerochanPost, ZerochanRating, ZerochanSort};
 
@@ -81,7 +83,9 @@ impl BooruClientBuilder for ZerochanClientBuilder {
     const BASE_URL: &'static str = "https://www.zerochan.net";
 
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions {
+    where
+        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+    {
         self.options = func(self.options);
         self
     }
@@ -93,11 +97,16 @@ impl BooruClientBuilder for ZerochanClientBuilder {
         }
     }
     fn build(self) -> Self::Client
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         Self::Client::new(self)
     }
 
-    fn order(mut self, order: Self::Order) -> Self where Self: Sized {
+    fn order(mut self, order: Self::Order) -> Self
+    where
+        Self: Sized,
+    {
         self.order = Some(order);
         self
     }

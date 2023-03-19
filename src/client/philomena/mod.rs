@@ -1,7 +1,11 @@
+use crate::client::generic::{
+    BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions,
+};
 use std::collections::HashMap;
-use crate::client::generic::{BooruClient, BooruClientBuilder, BooruClientBuilderOptions, BooruClientOptions};
 
-pub use self::model::{PhilomenaDetailResponse, PhilomenaListResponse, PhilomenaPost, PhilomenaRating, PhilomenaSort};
+pub use self::model::{
+    PhilomenaDetailResponse, PhilomenaListResponse, PhilomenaPost, PhilomenaRating, PhilomenaSort,
+};
 
 pub mod model;
 
@@ -17,7 +21,8 @@ impl BooruClient<'_> for PhilomenaClient {
     type PostResponse = PhilomenaDetailResponse;
     type PostListResponse = PhilomenaListResponse;
     const PATH_POST_BY_ID: &'static str = "api/v1/json/images/{id}";
-    const PATH_POST: &'static str = "api/v1/json/search/images?q={tags}&page={page}&per_page={limit}";
+    const PATH_POST: &'static str =
+        "api/v1/json/search/images?q={tags}&page={page}&per_page={limit}";
 
     fn new(builder: Self::Builder) -> Self {
         PhilomenaClient {
@@ -52,7 +57,9 @@ impl BooruClientBuilder for PhilomenaClientBuilder {
     const BASE_URL: &'static str = "https://derpibooru.org";
 
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions {
+    where
+        F: FnOnce(BooruClientBuilderOptions) -> BooruClientBuilderOptions,
+    {
         self.options = func(self.options);
         self
     }
@@ -64,15 +71,23 @@ impl BooruClientBuilder for PhilomenaClientBuilder {
         }
     }
     fn build(self) -> Self::Client
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         Self::Client::new(self)
     }
 
-    fn rating(self, rating: Self::Rating) -> Self where Self: Sized {
+    fn rating(self, rating: Self::Rating) -> Self
+    where
+        Self: Sized,
+    {
         self.tag(rating.to_string())
     }
 
-    fn order(mut self, order: Self::Order) -> Self where Self: Sized {
+    fn order(mut self, order: Self::Order) -> Self
+    where
+        Self: Sized,
+    {
         self.order = Some(order);
         self
     }

@@ -1,9 +1,11 @@
 //! Models for Philomena
 /// https://derpibooru.org/pages/api
 use core::fmt;
+use std::borrow::Cow;
 
+use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PhilomenaPost {
@@ -49,6 +51,40 @@ pub struct PhilomenaPost {
     pub uploader_id: Option<u32>,
 }
 
+impl BooruPostModel for PhilomenaPost {
+    fn id(&self) -> Cow<str> {
+        self.id.to_string().into()
+    }
+
+    fn hash(&self) -> Option<ImageHash> {
+        Some(ImageHash::SHA512(self.sha512_hash.as_str().into()))
+    }
+
+    fn images(&self) -> Images {
+        Images {
+            original: Image::new(self.view_url.as_str())
+                .size(self.width, self.height)
+                .filesize(self.size)
+                .ext(self.format.as_str())
+                .into(),
+            sample: Image::new(self.representations.medium.as_str()).into(),
+            preview: Image::new(self.representations.thumb.as_str()).into(),
+        }
+    }
+
+    fn source_url(&self) -> Option<Cow<str>> {
+        if let Some(source) = self.source_url.as_ref() {
+            Some(source.into())
+        } else {
+            None
+        }
+    }
+
+    fn tags(&self) -> Vec<String> {
+        // TODO use Cow
+        self.tags.to_owned()
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Representations {
