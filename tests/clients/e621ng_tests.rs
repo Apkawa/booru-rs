@@ -59,7 +59,7 @@ mod e621ng {
         );
 
         let tags = model.tags();
-        assert!(tags.len() > 0);
+        assert!(!tags.is_empty());
         println!(
             "{:p}, {:p} {:p}",
             &tags,

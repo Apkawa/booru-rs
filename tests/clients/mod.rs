@@ -1,5 +1,3 @@
-mod helpers;
-
 mod danbooru_tests;
 mod danbooru_v1_tests;
 mod e621ng_tests;
