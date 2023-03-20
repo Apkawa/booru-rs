@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use serde::{Deserialize, Deserializer};
 use serde::de::Error;
+use serde::{Deserialize, Deserializer};
+use std::str::FromStr;
 
 use crate::manager::builder::EngineBooruBuilder;
 
@@ -41,7 +41,10 @@ impl Engine {
 }
 
 impl<'de> Deserialize<'de> for Engine {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
         let s = String::deserialize(deserializer)?;
         Engine::try_from(&s).map_err(|_| D::Error::custom("Invalid engine!"))
     }
@@ -67,10 +70,7 @@ impl FromStr for Engine {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use Engine::*;
         let s = s.to_lowercase();
-        let s = s
-            .replace("_", "")
-            .replace("-", "")
-            .replace(".", "");
+        let s = s.replace("_", "").replace("-", "").replace(".", "");
         let engine = match s.as_str() {
             #[cfg(feature = "danbooru")]
             "danbooru" => Danbooru,

@@ -45,7 +45,7 @@ pub struct MoebooruPost {
     pub height: u32,
     pub is_held: bool,
 
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for MoebooruPost {
@@ -102,7 +102,9 @@ impl From<Vec<MoebooruPost>> for MoebooruPost {
 
 impl BooruPostModelSetUrl for MoebooruPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

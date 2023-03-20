@@ -40,21 +40,37 @@ impl EngineBooruBuilder {
         use Engine::*;
         match self.engine {
             #[cfg(feature = "danbooru")]
-            Danbooru => DanbooruClient::with_options(self.options.clone()).base_url().to_string(),
+            Danbooru => DanbooruClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "danbooru_v1")]
-            DanbooruV1 => DanbooruV1Client::with_options(self.options.clone()).base_url().to_string(),
+            DanbooruV1 => DanbooruV1Client::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "gelbooru")]
-            Gelbooru => GelbooruClient::with_options(self.options.clone()).base_url().to_string(),
+            Gelbooru => GelbooruClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "gelbooru_v02")]
-            GelbooruV02 => GelbooruV02Client::with_options(self.options.clone()).base_url().to_string(),
+            GelbooruV02 => GelbooruV02Client::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "moebooru")]
-            Moebooru => MoebooruClient::with_options(self.options.clone()).base_url().to_string(),
+            Moebooru => MoebooruClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "philomena")]
-            Philomena => PhilomenaClient::with_options(self.options.clone()).base_url().to_string(),
+            Philomena => PhilomenaClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "zerochan")]
-            Zerochan => ZerochanClient::with_options(self.options.clone()).base_url().to_string(),
+            Zerochan => ZerochanClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
             #[cfg(feature = "e621ng")]
-            E621ng => E621ngClient::with_options(self.options.clone()).base_url().to_string(),
+            E621ng => E621ngClient::with_options(self.options.clone())
+                .base_url()
+                .to_string(),
         }
     }
 
@@ -149,8 +165,8 @@ impl EngineBooruBuilder {
 
 impl BooruOptionBuilder for EngineBooruBuilder {
     fn with_inner_options<F>(mut self, func: F) -> Self
-        where
-            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+    where
+        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
     {
         self.options = func(self.options);
         self

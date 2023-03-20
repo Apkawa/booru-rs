@@ -113,7 +113,9 @@ impl BooruPostModel for DanbooruPost {
 
 impl BooruPostModelSetUrl for DanbooruPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

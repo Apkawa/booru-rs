@@ -114,7 +114,9 @@ impl From<ZerochanListItem> for ZerochanPost {
 
 impl BooruPostModelSetUrl for ZerochanPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

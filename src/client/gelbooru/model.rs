@@ -58,7 +58,7 @@ pub struct GelbooruPost {
     pub post_locked: u32,
     pub has_children: String,
 
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for GelbooruPost {
@@ -101,13 +101,22 @@ impl BooruPostModel for GelbooruPost {
     }
 
     fn post_url(&self) -> Option<Cow<str>> {
-        Some(format!("{}/index.php?page=post&s=view&id={}", self.base_url.as_ref().unwrap(), self.id).into())
+        Some(
+            format!(
+                "{}/index.php?page=post&s=view&id={}",
+                self.base_url.as_ref().unwrap(),
+                self.id
+            )
+            .into(),
+        )
     }
 }
 
 impl BooruPostModelSetUrl for GelbooruPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

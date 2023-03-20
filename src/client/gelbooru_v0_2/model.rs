@@ -35,7 +35,7 @@ pub struct GelbooruPostV0_2 {
     pub sample_height: u32,
     pub sample_width: u32,
 
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for GelbooruPostV0_2 {
@@ -70,7 +70,14 @@ impl BooruPostModel for GelbooruPostV0_2 {
     }
 
     fn post_url(&self) -> Option<Cow<str>> {
-        Some(format!("{}/index.php?page=post&s=view&id={}", self.base_url.as_ref().unwrap(), self.id).into())
+        Some(
+            format!(
+                "{}/index.php?page=post&s=view&id={}",
+                self.base_url.as_ref().unwrap(),
+                self.id
+            )
+            .into(),
+        )
     }
 }
 
@@ -82,7 +89,9 @@ impl From<Vec<GelbooruPostV0_2>> for GelbooruPostV0_2 {
 
 impl BooruPostModelSetUrl for GelbooruPostV0_2 {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

@@ -50,7 +50,7 @@ pub struct PhilomenaPost {
     pub uploader: Option<String>,
     pub uploader_id: Option<u32>,
 
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for PhilomenaPost {
@@ -127,7 +127,9 @@ impl From<PhilomenaDetailResponse> for PhilomenaPost {
 
 impl BooruPostModelSetUrl for PhilomenaPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

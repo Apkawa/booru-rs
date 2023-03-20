@@ -4,8 +4,8 @@ use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::generic::BooruPostModel;
 use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
+use crate::client::generic::BooruPostModel;
 use crate::utils::dt::timestamp_to_rfc_3339;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -41,7 +41,7 @@ pub struct DanbooruPostV1 {
 
     pub created_at: CreatedAt,
 
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for DanbooruPostV1 {
@@ -91,7 +91,9 @@ impl BooruPostModel for DanbooruPostV1 {
 
 impl BooruPostModelSetUrl for DanbooruPostV1 {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }

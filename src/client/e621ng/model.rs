@@ -53,8 +53,7 @@ pub struct E621ngPost {
     pub is_favorited: bool,
     pub has_notes: bool,
     // pub duration: Option<_>,
-
-    pub base_url: Option<String>
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for E621ngPost {
@@ -127,7 +126,9 @@ impl BooruPostModel for E621ngPost {
 
 impl BooruPostModelSetUrl for E621ngPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-        where Self: Sized {
+    where
+        Self: Sized,
+    {
         self.base_url = Some(url.into());
         self
     }
