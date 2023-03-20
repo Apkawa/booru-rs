@@ -18,6 +18,7 @@ pub struct BooruClientOptions {
     pub(crate) url: Option<String>,
     pub(crate) proxy: Option<Proxy>,
     pub(crate) tags: Vec<String>,
+    pub(crate) blacklist_tags: Vec<String>,
     pub(crate) order: Option<String>,
     pub(crate) rating: Option<String>,
     pub(crate) random: Option<bool>,
@@ -33,6 +34,7 @@ impl Default for BooruClientOptions {
             headers: get_default_headers(),
             url: None,
             tags: vec![],
+            blacklist_tags: vec![],
             order: None,
             rating: None,
             random: None,
@@ -99,12 +101,18 @@ pub trait BooruClient {
         }
         if let Some(random) = options.random.as_ref() {
             if *random {
-                tag_string.push_str(" order:random".to_string().as_str());
+                tag_string.push_str(" order:random");
             }
         }
         if let Some(rating) = options.rating.as_ref() {
             tag_string.push_str(format!(" rating:{rating}").as_str());
         }
+        if !options.blacklist_tags.is_empty() {
+            let blacklist_tags = options.blacklist_tags.iter().map(|s| format!("-{s}")).collect::<Vec<_>>().join(" ");
+            tag_string.push_str(" ");
+            tag_string.push_str(blacklist_tags.as_str());
+        }
+
         let tag_string = form_urlencoded::byte_serialize(tag_string.as_bytes());
 
         [(self.base_url()), Self::PATH_POST]
@@ -259,6 +267,9 @@ pub trait BooruOptionBuilder {
     where
         Self: Sized,
     {
-        self.tag(format!("-{}", tag.into()))
+        self.with_inner_options(move |mut options| {
+            options.blacklist_tags.push(tag.into());
+            options
+        })
     }
 }
