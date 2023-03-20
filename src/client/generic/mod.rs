@@ -108,8 +108,13 @@ pub trait BooruClient {
             tag_string.push_str(format!(" rating:{rating}").as_str());
         }
         if !options.blacklist_tags.is_empty() {
-            let blacklist_tags = options.blacklist_tags.iter().map(|s| format!("-{s}")).collect::<Vec<_>>().join(" ");
-            tag_string.push_str(" ");
+            let blacklist_tags = options
+                .blacklist_tags
+                .iter()
+                .map(|s| format!("-{s}"))
+                .collect::<Vec<_>>()
+                .join(" ");
+            tag_string.push(' ');
             tag_string.push_str(blacklist_tags.as_str());
         }
 

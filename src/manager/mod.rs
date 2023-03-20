@@ -70,7 +70,7 @@ impl FromStr for Engine {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use Engine::*;
         let s = s.to_lowercase();
-        let s = s.replace("_", "").replace("-", "").replace(".", "");
+        let s = s.replace(['_', '-', '.'], "");
         let engine = match s.as_str() {
             #[cfg(feature = "danbooru")]
             "danbooru" => Danbooru,

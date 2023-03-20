@@ -86,7 +86,7 @@ impl BooruPostModel for GelbooruPost {
 
     fn source_url(&self) -> Option<Cow<str>> {
         if !self.source.is_empty() {
-            Some(self.source.split(" ").take(1).collect())
+            Some(self.source.split(' ').take(1).collect())
         } else {
             None
         }
