@@ -2,7 +2,7 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
 use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
@@ -51,6 +51,9 @@ pub struct DanbooruPost {
     pub is_flagged: bool,
     pub is_pending: bool,
     pub bit_flags: u32,
+
+    // Pass from trait
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for DanbooruPost {
@@ -76,7 +79,11 @@ impl BooruPostModel for DanbooruPost {
     }
 
     fn source_url(&self) -> Option<Cow<str>> {
-        Some(self.source.as_str().into())
+        if self.pixiv_id.is_some() {
+            Some(format!("https://www.pixiv.net/artworks/{}", self.pixiv_id.unwrap()).into())
+        } else {
+            Some(self.source.as_str().into())
+        }
     }
 
     fn tags(&self) -> Vec<Cow<str>> {
@@ -97,6 +104,18 @@ impl BooruPostModel for DanbooruPost {
 
     fn created(&self) -> Option<Cow<str>> {
         Some(self.created_at.as_str().into())
+    }
+
+    fn post_url(&self) -> Option<Cow<str>> {
+        Some(format!("{}/posts/{}", self.base_url.as_ref().unwrap(), self.id).into())
+    }
+}
+
+impl BooruPostModelSetUrl for DanbooruPost {
+    fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
+        where Self: Sized {
+        self.base_url = Some(url.into());
+        self
     }
 }
 

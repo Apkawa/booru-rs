@@ -4,7 +4,7 @@ use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
 use crate::client::generic::BooruPostModel;
 use crate::utils::dt::timestamp_to_rfc_3339;
 
@@ -44,6 +44,8 @@ pub struct MoebooruPost {
     pub width: u32,
     pub height: u32,
     pub is_held: bool,
+
+    pub base_url: Option<String>
 }
 
 impl BooruPostModel for MoebooruPost {
@@ -86,11 +88,23 @@ impl BooruPostModel for MoebooruPost {
     fn created(&self) -> Option<Cow<str>> {
         Some(self.created_at.as_str().into())
     }
+
+    fn post_url(&self) -> Option<Cow<str>> {
+        Some(format!("{}/post/show/{}/", self.base_url.as_ref().unwrap(), self.id).into())
+    }
 }
 
 impl From<Vec<MoebooruPost>> for MoebooruPost {
     fn from(value: Vec<MoebooruPost>) -> Self {
         value[0].to_owned()
+    }
+}
+
+impl BooruPostModelSetUrl for MoebooruPost {
+    fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
+        where Self: Sized {
+        self.base_url = Some(url.into());
+        self
     }
 }
 

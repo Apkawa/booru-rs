@@ -11,6 +11,7 @@ use crate::utils::general::get_default_headers;
 pub mod model;
 
 pub use model::BooruPostModel;
+use crate::client::generic::model::BooruPostModelSetUrl;
 
 #[derive(Debug, Clone)]
 pub struct BooruClientOptions {
@@ -41,9 +42,21 @@ impl Default for BooruClientOptions {
     }
 }
 
+impl BooruClientOptions {
+    pub fn client(&self) -> reqwest::blocking::Client {
+        let mut client_builder = reqwest::blocking::ClientBuilder::new();
+        if let Some(proxy) = self.proxy.as_ref() {
+            client_builder = client_builder.proxy(proxy.to_owned());
+        } else {
+            client_builder = client_builder.no_proxy();
+        }
+        client_builder.build().unwrap()
+    }
+}
+
 #[must_use]
 pub trait BooruClient {
-    type PostModel: DeserializeOwned + BooruPostModel;
+    type PostModel: DeserializeOwned + BooruPostModel + BooruPostModelSetUrl;
     type PostResponse: DeserializeOwned + Into<Self::PostModel>;
     type PostListResponse: DeserializeOwned + Into<Vec<Self::PostModel>>;
     type Rating: Display;
@@ -54,8 +67,8 @@ pub trait BooruClient {
     const PATH_POST: &'static str;
 
     fn new() -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         Self::with_options(BooruClientOptions::default())
     }
@@ -64,13 +77,7 @@ pub trait BooruClient {
     fn options(&self) -> &BooruClientOptions;
 
     fn client(&self) -> reqwest::blocking::Client {
-        let mut client_builder = reqwest::blocking::ClientBuilder::new();
-        if let Some(proxy) = self.options().proxy.as_ref() {
-            client_builder = client_builder.proxy(proxy.to_owned());
-        } else {
-            client_builder = client_builder.no_proxy();
-        }
-        client_builder.build().unwrap()
+        self.options().client()
     }
 
     fn base_url(&self) -> &str {
@@ -117,8 +124,8 @@ pub trait BooruClient {
         let response = request.send()?;
         dbg!(&response);
         let text = response.text().unwrap();
-        let json = serde_json::from_str::<Self::PostResponse>(&text);
-        Ok(json.expect(&text).into())
+        let json = serde_json::from_str::<Self::PostResponse>(&text).expect(&text);
+        Ok(json.into().set_base_url(self.base_url()))
     }
 
     fn get_extra_query(&self) -> HashMap<String, String> {
@@ -140,22 +147,21 @@ pub trait BooruClient {
         let response = request.send()?;
         dbg!(&response);
         let text = response.text().unwrap();
-        let json = serde_json::from_str::<Self::PostListResponse>(&text);
-
-        Ok(json.expect(&text).into())
+        let json = serde_json::from_str::<Self::PostListResponse>(&text).expect(&text);
+        Ok(json.into().set_base_url(self.base_url()))
     }
 }
 
 #[must_use]
 pub trait BooruOptionBuilder {
     fn with_inner_options<F>(self, func: F) -> Self
-    where
-        F: FnOnce(BooruClientOptions) -> BooruClientOptions,
-        Self: Sized;
+        where
+            F: FnOnce(BooruClientOptions) -> BooruClientOptions,
+            Self: Sized;
 
     fn proxy<I: IntoUrl>(self, proxy: Option<I>) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.proxy = proxy.map(|proxy| Proxy::all(proxy).unwrap());
@@ -164,8 +170,8 @@ pub trait BooruOptionBuilder {
     }
 
     fn header<K: Into<HeaderName>, V: Into<HeaderValue>>(self, key: K, value: V) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.headers.insert(key.into(), value.into());
@@ -173,9 +179,9 @@ pub trait BooruOptionBuilder {
         })
     }
     /// Change the default url for the client
-    fn default_url(self, url: &str) -> Self
-    where
-        Self: Sized,
+    fn url(self, url: &str) -> Self
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.url = Some(url.to_string());
@@ -185,8 +191,8 @@ pub trait BooruOptionBuilder {
 
     /// Set how many posts you want to retrieve (100 is the default and maximum)
     fn limit(self, limit: u32) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.limit = limit;
@@ -195,8 +201,8 @@ pub trait BooruOptionBuilder {
     }
 
     fn page(self, page: u32) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.page = page;
@@ -206,8 +212,8 @@ pub trait BooruOptionBuilder {
 
     /// Add a tag to the query
     fn tag<S: Into<String>>(self, tag: S) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.tags.push(tag.into());
@@ -217,8 +223,8 @@ pub trait BooruOptionBuilder {
 
     /// Add a [`Self::Rating`] to the query
     fn rating<R: Display>(self, rating: R) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.rating = Some(format!("{}", rating));
@@ -228,8 +234,8 @@ pub trait BooruOptionBuilder {
 
     /// Retrieves the posts in a random order
     fn random(self, random: bool) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.random = random.into();
@@ -239,8 +245,8 @@ pub trait BooruOptionBuilder {
 
     /// Add a [`Self::Order`] to the query
     fn order<O: Display>(self, order: O) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.with_inner_options(move |mut options| {
             options.order = Some(format!("{}", order));
@@ -250,8 +256,8 @@ pub trait BooruOptionBuilder {
 
     /// Blacklist a tag from the query
     fn blacklist_tag<S: Into<String>>(self, tag: S) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.tag(format!("-{}", tag.into()))
     }

@@ -10,7 +10,7 @@ mod myimouto {
     #[test]
     fn get_posts_with_tag() {
         let posts = MoebooruClient::new()
-            .default_url("https://lolibooru.moe")
+            .url("https://lolibooru.moe")
             .proxy(proxy())
             .tag("kafuu_chino")
             .get()
@@ -22,7 +22,7 @@ mod myimouto {
     #[test]
     fn get_post_by_id() {
         let post = MoebooruClient::new()
-            .default_url("https://lolibooru.moe")
+            .url("https://lolibooru.moe")
             .proxy(proxy())
             .get_by_id(543968);
 

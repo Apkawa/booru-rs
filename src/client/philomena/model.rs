@@ -3,7 +3,7 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
 use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
@@ -49,6 +49,8 @@ pub struct PhilomenaPost {
 
     pub uploader: Option<String>,
     pub uploader_id: Option<u32>,
+
+    pub base_url: Option<String>
 }
 
 impl BooruPostModel for PhilomenaPost {
@@ -83,6 +85,10 @@ impl BooruPostModel for PhilomenaPost {
     fn created(&self) -> Option<Cow<str>> {
         Some(self.created_at.as_str().into())
     }
+
+    fn post_url(&self) -> Option<Cow<str>> {
+        Some(format!("{}/images/{}/", self.base_url.as_ref().unwrap(), self.id).into())
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -116,6 +122,14 @@ impl From<PhilomenaListResponse> for Vec<PhilomenaPost> {
 impl From<PhilomenaDetailResponse> for PhilomenaPost {
     fn from(value: PhilomenaDetailResponse) -> Self {
         value.image
+    }
+}
+
+impl BooruPostModelSetUrl for PhilomenaPost {
+    fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
+        where Self: Sized {
+        self.base_url = Some(url.into());
+        self
     }
 }
 

@@ -3,7 +3,7 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
 use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
@@ -22,6 +22,8 @@ pub struct ZerochanPost {
     pub source: Option<String>,
     pub primary: String,
     pub tags: Vec<String>,
+
+    pub base_url: Option<String>,
 }
 
 impl BooruPostModel for ZerochanPost {
@@ -50,6 +52,10 @@ impl BooruPostModel for ZerochanPost {
 
     fn tags(&self) -> Vec<Cow<str>> {
         self.tags.iter().map(Into::into).collect()
+    }
+
+    fn post_url(&self) -> Option<Cow<str>> {
+        Some(format!("{}/{}", self.base_url.as_ref().unwrap(), self.id).into())
     }
 }
 
@@ -101,7 +107,16 @@ impl From<ZerochanListItem> for ZerochanPost {
             source,
             primary: tag,
             tags,
+            base_url: None,
         }
+    }
+}
+
+impl BooruPostModelSetUrl for ZerochanPost {
+    fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
+        where Self: Sized {
+        self.base_url = Some(url.into());
+        self
     }
 }
 

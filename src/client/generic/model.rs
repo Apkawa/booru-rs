@@ -56,8 +56,8 @@ impl<'a> Image<'a> {
 }
 
 impl<'a, I> From<I> for Image<'a>
-where
-    I: Into<&'a str>,
+    where
+        I: Into<&'a str>,
 {
     fn from(value: I) -> Image<'a> {
         Image::new(value.into())
@@ -76,6 +76,9 @@ pub trait BooruPostModel {
     fn hash(&self) -> Option<ImageHash>;
     fn images(&self) -> Images;
     fn source_url(&self) -> Option<Cow<str>>;
+    fn post_url(&self) -> Option<Cow<str>> {
+        None
+    }
     fn tags(&self) -> Vec<Cow<str>>;
 
     fn character(&self) -> Vec<Cow<str>> {
@@ -86,5 +89,23 @@ pub trait BooruPostModel {
     }
     fn created(&self) -> Option<Cow<str>> {
         None
+    }
+}
+
+pub trait BooruPostModelSetUrl {
+    fn set_base_url<I: Into<String> + Clone>(self, _url: I) -> Self
+        where Self: Sized
+    {
+        self
+    }
+}
+
+impl<T: BooruPostModelSetUrl> BooruPostModelSetUrl for Vec<T> {
+    fn set_base_url<I: Into<String> + Clone>(self, url: I) -> Self
+        where Self: Sized
+    {
+        self.into_iter()
+            .map(|e| e.set_base_url(url.clone().into()))
+            .collect()
     }
 }

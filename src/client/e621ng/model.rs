@@ -2,7 +2,7 @@
 use core::fmt;
 use std::borrow::Cow;
 
-use crate::client::generic::model::{Image, ImageHash, Images};
+use crate::client::generic::model::{BooruPostModelSetUrl, Image, ImageHash, Images};
 use crate::client::generic::BooruPostModel;
 use serde::{Deserialize, Serialize};
 
@@ -53,6 +53,8 @@ pub struct E621ngPost {
     pub is_favorited: bool,
     pub has_notes: bool,
     // pub duration: Option<_>,
+
+    pub base_url: Option<String>
 }
 
 impl BooruPostModel for E621ngPost {
@@ -117,6 +119,17 @@ impl BooruPostModel for E621ngPost {
 
     fn created(&self) -> Option<Cow<str>> {
         Some(self.created_at.as_str().into())
+    }
+    fn post_url(&self) -> Option<Cow<str>> {
+        Some(format!("{}/posts/{}/", self.base_url.as_ref().unwrap(), self.id).into())
+    }
+}
+
+impl BooruPostModelSetUrl for E621ngPost {
+    fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
+        where Self: Sized {
+        self.base_url = Some(url.into());
+        self
     }
 }
 
