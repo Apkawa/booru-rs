@@ -1,4 +1,5 @@
 //! Models for Gelbooru
+/// https://gelbooru.com/index.php?page=help&topic=cheatsheet
 use core::fmt;
 use std::borrow::Cow;
 
@@ -75,9 +76,11 @@ impl BooruPostModel for GelbooruPost {
             original: Image::new(self.file_url.as_str())
                 .size(self.width, self.height)
                 .into(),
-            sample: Image::new(self.sample_url.as_str())
-                .size(self.sample_width, self.sample_height)
-                .into(),
+            sample: if self.sample_url.len() > 0 {
+                Image::new(self.sample_url.as_str())
+                    .size(self.sample_width, self.sample_height)
+                    .into()
+            } else { None },
             preview: Image::new(self.preview_url.as_str())
                 .size(self.preview_width, self.preview_height)
                 .into(),
@@ -107,15 +110,15 @@ impl BooruPostModel for GelbooruPost {
                 self.base_url.as_ref().unwrap(),
                 self.id
             )
-            .into(),
+                .into(),
         )
     }
 }
 
 impl BooruPostModelSetUrl for GelbooruPost {
     fn set_base_url<I: Into<String>>(mut self, url: I) -> Self
-    where
-        Self: Sized,
+        where
+            Self: Sized,
     {
         self.base_url = Some(url.into());
         self
