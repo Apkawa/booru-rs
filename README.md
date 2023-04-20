@@ -42,14 +42,25 @@ The client currently supports engine:
 - [x] [e621ng](https://e621.net/help/api)
     * e621.net
     * e926.net
+- [ ] [Hybooru](https://github.com/funmaker/hybooru)
+    * jilkbooru.com
+    * so-fabulo.us 
+    * booru.funmaker.moe
+- [ ] beta.sankakucomplex.com
+- [ ] chan.sankakucomplex.com
+- [ ] booru.io
+- [ ] anime-pictures.net
 - [ ] ~~[Shimmie](https://github.com/shish/shimmie2)~~ !NO HAVE API!
     * shimmie.shishnet.org
     * booru.soy
     * (pokeplayer.com)[https://pokeplayer.com/shimmie/]
     * booru.newblood.games
-- [ ] [szurubooru](https://github.com/rr-/szurubooru)
+- [ ] ~~[szurubooru](https://github.com/rr-/szurubooru)~~ !NO EXAMPLE SITE!
 
-[List of boorus sites](https://github.com/red-tails/list-of-boorus/)
+## List booru
+
+* [red-tails/List of boorus](https://github.com/red-tails/list-of-boorus/)
+* [awesome-booru](https://github.com/celsriseup/awesome-booru)
 
 ## Features
 
